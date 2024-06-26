@@ -1,0 +1,59 @@
+.video-item {
+  position: relative;
+  cursor: pointer;
+  margin-bottom: 10px; /* Adjust margin as needed */
+}
+
+.card {
+  border: none;
+  min-height: 200px; /* Set a minimum height for the card */
+  transition: transform 0.2s, box-shadow 0.2s; /* Transition for hover effect */
+}
+
+.card:hover {
+  transform: scale(1.05); /* Slightly enlarge the video */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for lighting effect */
+}
+
+.video-image-container {
+  position: relative;
+}
+
+.card-img-top {
+  width: 100%;
+  height: 150px; /* Set a fixed height for the video thumbnails */
+  object-fit: cover; /* Ensure the image covers the whole area */
+}
+
+.video-duration {
+  position: absolute;
+  bottom: 8px; /* Adjust as needed */
+  right: 8px; /* Adjust as needed */
+  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+  color: white;
+  padding: 2px 4px; /* Adjust padding as needed */
+  border-radius: 3px;
+  font-size: 12px; /* Adjust font size as needed */
+}
+
+.card-body {
+  padding: 10px; /* Smaller padding */
+}
+
+.video-title {
+  font-size: 14px; /* Smaller font size */
+  color: #000000; /* Black text */
+  margin-bottom: 5px; /* Smaller margin */
+}
+
+.video-info {
+  font-size: 12px; /* Smaller font size */
+  color: #808080; /* Gray text */
+  margin-top: 0; /* No margin */
+}
+.video-item .edited-thumbnail {
+  width: 100px;
+  height: auto;
+  margin-top: 10px;
+}
+
