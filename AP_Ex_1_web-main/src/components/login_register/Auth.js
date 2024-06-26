@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { useNavigate } from 'react-router-dom';
 import './Auth.css';
 
 const loginSchema = yup.object().shape({
-  username: yup.string().required('Username is required'),
+  email: yup.string().email('Invalid email').required('Email is required'),
   password: yup.string().required('Password is required')
 });
 
 const registrationSchema = yup.object().shape({
   username: yup.string().required('Username is required'),
+  email: yup.string().email('Invalid email').required('Email is required'),
   password: yup.string().min(8, 'Password must be at least 8 characters').matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/, 'Password must contain at least one uppercase letter, one lowercase letter, and one number'),
   confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match'),
   displayName: yup.string().required('Display Name is required'),
@@ -20,6 +22,7 @@ const registrationSchema = yup.object().shape({
 function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null);
+  const navigate = useNavigate();
 
   const loginForm = useForm({
     resolver: yupResolver(loginSchema)
@@ -29,12 +32,54 @@ function Auth() {
     resolver: yupResolver(registrationSchema)
   });
 
-  const handleLoginSubmit = (data) => {
-    console.log('Login Data:', data);
+  const handleLoginSubmit = async (data) => {
+    try {
+      const response = await fetch('http://localhost:5000/api/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error('Login failed');
+      }
+
+      const result = await response.json();
+      console.log('Login successful', result);
+      // Handle login success (e.g., save token, navigate)
+      navigate('/');
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
-  const handleRegistrationSubmit = (data) => {
-    console.log('Registration Data:', data);
+  const handleRegistrationSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+      formData.append('username', data.username);
+      formData.append('email', data.email);
+      formData.append('password', data.password);
+      formData.append('displayName', data.displayName);
+      formData.append('image', data.image[0]);
+
+      const response = await fetch('http://localhost:5000/api/users/register', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Registration failed');
+      }
+
+      const result = await response.json();
+      console.log('Registration successful', result);
+      // Handle registration success (e.g., navigate to login)
+      navigate('/login');
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   const handleImageChange = (event) => {
@@ -51,9 +96,9 @@ function Auth() {
         {isLogin ? (
           <form onSubmit={loginForm.handleSubmit(handleLoginSubmit)}>
             <div className="input-group">
-              <label>Username</label>
-              <input name="username" ref={loginForm.register} />
-              {loginForm.formState.errors.username && <p className="error">{loginForm.formState.errors.username.message}</p>}
+              <label>Email</label>
+              <input name="email" ref={loginForm.register} />
+              {loginForm.formState.errors.email && <p className="error">{loginForm.formState.errors.email.message}</p>}
             </div>
             <div className="input-group">
               <label>Password</label>
@@ -68,6 +113,11 @@ function Auth() {
               <label>Username</label>
               <input name="username" ref={registrationForm.register} />
               {registrationForm.formState.errors.username && <p className="error">{registrationForm.formState.errors.username.message}</p>}
+            </div>
+            <div className="input-group">
+              <label>Email</label>
+              <input name="email" ref={registrationForm.register} />
+              {registrationForm.formState.errors.email && <p className="error">{registrationForm.formState.errors.email.message}</p>}
             </div>
             <div className="input-group">
               <label>Password</label>
