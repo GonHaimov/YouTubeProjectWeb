@@ -9,35 +9,34 @@ const Register = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const navigate = useNavigate();
 
-  const onSubmit = data => {
-    const storedUsers = JSON.parse(sessionStorage.getItem('users')) || [];
-
-    const emailExists = storedUsers.some(user => user.email === data.email);
-    const usernameExists = storedUsers.some(user => user.username === data.username);
-
-    if (emailExists) {
-      alert("This email is already registered.");
-      return;
-    }
-
-    if (usernameExists) {
-      alert("That username is taken. Try another.");
-      return;
-    }
-
+  const onSubmit = async (data) => {
     // Handle profile picture upload
     const fileReader = new FileReader();
-    fileReader.onloadend = () => {
+    fileReader.onloadend = async () => {
       const newUser = {
         ...data,
         profilePicture: fileReader.result // Store the base64 encoded image
       };
 
-      // Save user details
-      storedUsers.push(newUser);
-      sessionStorage.setItem('users', JSON.stringify(storedUsers));
-      alert("Registration successful!");
-      navigate('/login'); // Redirect to login page
+      try {
+        const response = await fetch('http://localhost:5000/api/users/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newUser)
+        });
+
+        if (response.ok) {
+          alert("Registration successful!");
+          navigate('/login'); // Redirect to login page
+        } else {
+          const responseData = await response.json();
+          alert(`Registration failed: ${responseData.message}`);
+        }
+      } catch (error) {
+        alert(`An error occurred: ${error.message}`);
+      }
     };
 
     if (data.profilePicture[0]) {
