@@ -1,0 +1,189 @@
+.header-container {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  background-color: #f8f8f8;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  height: 60px;
+}
+
+.youtube-logo-light {
+  height: 90px;
+  width: auto;
+  margin-right: 120px;
+}
+
+.youtube-logo-dark {
+  height: 20px;
+  width: auto;
+  margin-right: 120px;
+}
+
+.search-form {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+
+.search-input {
+  flex-grow: 1;
+  height: 40px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+  border-right: none;
+  padding-left: 20px;
+}
+
+.search-button {
+  height: 40px;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  background-color: #e0e0e0;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+}
+
+.mic-button {
+  height: 40px;
+  margin-left: 10px;
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+}
+
+.right-icons {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.notification-button {
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 50%;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+}
+
+.account-icon {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.sign-in-button {
+  white-space: nowrap;
+}
+
+.username {
+  font-weight: bold;
+  margin-right: 10px; /* Adjust margin as needed */
+}
+
+.upload-button {
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 50%;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  font-size: 24px;
+}
+
+.user-image {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.sign-out-button {
+  white-space: nowrap;
+}
+
+.recent-searches-dropdown {
+  position: absolute;
+  top: 45px;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.dropdown-item {
+  padding: 10px;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: #f1f1f1;
+}
+
+/* Dark mode styles */
+body.dark-mode .header-container {
+  background-color: #282828;
+}
+
+body.dark-mode .search-form {
+  background-color: #000;
+}
+
+body.dark-mode .recent-searches-dropdown {
+  background-color: #333;
+  border: 1px solid #555;
+  color: #fff;
+}
+
+body.dark-mode .dropdown-item {
+  color: #fff;
+}
+
+body.dark-mode .dropdown-item:hover {
+  background-color: #444;
+}
+
+body.dark-mode .search-input {
+  background-color: #444;
+  color: #fff;
+}
+
+body.dark-mode .search-button {
+  background-color: #555;
+}
+
+body.dark-mode .mic-button {
+  background-color: #555;
+}
+
+body.dark-mode .right-icons .btn {
+  background-color: #555;
+  color: #fff;
+}

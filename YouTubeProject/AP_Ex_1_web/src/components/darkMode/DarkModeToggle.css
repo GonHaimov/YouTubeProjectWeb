@@ -1,0 +1,27 @@
+.dark-mode-toggle {
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 50%;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  font-size: 24px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.dark-mode-toggle:hover {
+  background-color: #d0d0d0;
+}
+
+/* Dark mode styles */
+body.dark-mode .dark-mode-toggle {
+  background-color: #333333;
+  color: #ffffff;
+}
+
+body.dark-mode .fa-sun {
+  color: #ffffff;
+}

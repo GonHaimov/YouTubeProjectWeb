@@ -1,0 +1,45 @@
+.button-bar-container {
+  margin-top: 10px; /* Adjust to move closer to the header */
+  margin-bottom: 10px; /* Adjust to provide space between buttons and videos */
+  display: flex;
+  justify-content: center;
+}
+
+.btn-group {
+  display: flex;
+  gap: 25px; /* Adjust the space between buttons */
+  flex-wrap: nowrap; /* Ensure buttons are in a single line */
+  overflow-x: auto; /* Add horizontal scrolling if buttons overflow */
+}
+
+.custom-btn {
+  background-color: #e0e0e0; /* Light grey background */
+  color: #000; /* Black text */
+  border: none;
+  padding: 5px 10px; /* Adjust padding to make buttons smaller */
+  border-radius: 20px; /* Make buttons individually rounded */
+  font-size: 14px; /* Smaller font size */
+  white-space: nowrap; /* Ensure text does not wrap to the next line */
+}
+
+.custom-btn:hover {
+  background-color: #d0d0d0; /* Slightly darker grey on hover */
+  font-weight: bold; /* Make text bold on hover */
+}
+
+.custom-btn.active {
+  background-color: #000; /* Black background when active */
+  color: #fff; /* White text when active */
+  font-weight: bold;
+}
+
+/* Dark mode styles */
+body.dark-mode .custom-btn {
+  background-color: #333333;
+  color: #ffffff;
+}
+
+body.dark-mode .custom-btn.active {
+  background-color: #555555;
+  color: #ffffff;
+}
