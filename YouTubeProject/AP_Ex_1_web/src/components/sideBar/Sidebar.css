@@ -1,0 +1,51 @@
+.sidebar {
+  width: 250px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+  background-color: #ffffff;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+  position: fixed;
+  top: 60px;
+  left: 0;
+}
+
+.sidebar-button {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 5px;
+  background-color: #fff;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font-size: 14px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.sidebar-button:hover {
+  background-color: #f1f1f1;
+}
+
+.sidebar-button .icon {
+  height: 20px;
+  width: 20px;
+  margin-right: 10px;
+}
+
+/* Dark mode styles */
+body.dark-mode .sidebar {
+  background-color: #202020;
+  color: #ffffff;
+}
+
+body.dark-mode .sidebar-button {
+  background-color: #333333;
+  color: #ffffff;
+}
+
+body.dark-mode .sidebar-button:hover {
+  background-color: #444444;
+}
