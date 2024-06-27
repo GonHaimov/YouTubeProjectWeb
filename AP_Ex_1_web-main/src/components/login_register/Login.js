@@ -9,16 +9,28 @@ function Login() {
   const [loginError, setLoginError] = useState(''); // State to store login error messages
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    const storedUsers = JSON.parse(sessionStorage.getItem('users')) || []; // Get stored users from sessionStorage
-    const user = storedUsers.find(user => user.username === username && user.password === password); // Find the user with matching username and password
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/tokens', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }), // Use username and password for login
+      });
 
-    if (user) {
-      sessionStorage.setItem('loggedInUser', JSON.stringify(user)); // Store the logged-in user in sessionStorage
-      alert('Login successful!');
-      navigate('/'); // Navigate to the home page
-    } else {
-      setLoginError('Username or password is incorrect'); // Set login error message
+      const data = await response.json();
+
+      if (response.ok) {
+        sessionStorage.setItem('loggedInUser', JSON.stringify(data.user)); // Store the logged-in user in sessionStorage
+        sessionStorage.setItem('authToken', data.token); // Store the authentication token
+        alert('Login successful!');
+        navigate('/'); // Navigate to the home page
+      } else {
+        setLoginError(data.message); // Set login error message
+      }
+    } catch (error) {
+      setLoginError('An error occurred. Please try again.'); // Set error message for network errors
     }
   };
 
@@ -41,7 +53,7 @@ function Login() {
           <form>
             <label className="input-label">
               <div className="input-wrapper">
-                <i className="fa fa-user icon"></i> {/* User icon */}
+                <i className="fa fa-user icon"></i> {/* Username icon */}
                 <input
                   type="text"
                   placeholder="Username"

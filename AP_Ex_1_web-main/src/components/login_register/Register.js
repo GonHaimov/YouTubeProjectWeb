@@ -10,16 +10,17 @@ const Register = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
-    // Handle profile picture upload
     const fileReader = new FileReader();
     fileReader.onloadend = async () => {
       const newUser = {
-        ...data,
+        username: data.username,
+        password: data.password,
+        email: data.email,
         profilePicture: fileReader.result // Store the base64 encoded image
       };
 
       try {
-        const response = await fetch('http://localhost:5000/api/users/register', {
+        const response = await fetch('http://localhost:5000/api/users', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -30,12 +31,15 @@ const Register = () => {
         if (response.ok) {
           alert("Registration successful!");
           navigate('/login'); // Redirect to login page
+        } else if (response.status === 409) {
+          alert("Username or email already exists.");
         } else {
-          const responseData = await response.json();
-          alert(`Registration failed: ${responseData.message}`);
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message}`);
         }
       } catch (error) {
-        alert(`An error occurred: ${error.message}`);
+        console.error('Error during registration:', error);
+        alert("An error occurred. Please try again.");
       }
     };
 

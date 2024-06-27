@@ -1,4 +1,3 @@
-// server/services/userService.js
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -26,8 +25,8 @@ const registerUser = async ({ username, password, email, profilePicture }) => {
   return await newUser.save();
 };
 
-const loginUser = async ({ email, password }) => {
-  const user = await User.findOne({ email });
+const loginUser = async ({ username, password }) => {
+  const user = await User.findOne({ username });
   if (!user) {
     throw new Error('User not found');
   }
