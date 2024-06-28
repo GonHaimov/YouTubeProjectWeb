@@ -4,7 +4,6 @@ import './Profile.css';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
-  const [userVideos, setUserVideos] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -13,23 +12,8 @@ const Profile = () => {
 
     if (loggedInUser && token) {
       setUser(loggedInUser);
-      fetchUserVideos(loggedInUser._id, token);
     }
   }, []);
-
-  const fetchUserVideos = async (userId, token) => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/users/${userId}/videos`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      const videos = await response.json();
-      setUserVideos(videos);
-    } catch (error) {
-      console.error('Error fetching user videos:', error);
-    }
-  };
 
   const handleUpdateProfile = () => {
     navigate('/update-profile');
@@ -51,19 +35,6 @@ const Profile = () => {
         <p>{user.email}</p>
         <button onClick={handleUpdateProfile}>Update Profile</button>
         <button onClick={handleDeleteProfile}>Delete Profile</button>
-      </div>
-      <div className="user-videos">
-        <h3>Your Videos</h3>
-        <ul>
-          {userVideos.map(video => (
-            <li key={video._id}>
-              <h4>{video.title}</h4>
-              <p>{video.views} views</p>
-              <p>{video.duration} seconds</p>
-              <p>Uploaded on {new Date(video.uploadDate).toLocaleDateString()}</p>
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );
