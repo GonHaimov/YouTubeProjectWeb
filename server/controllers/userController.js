@@ -1,4 +1,4 @@
-const { registerUser, loginUser } = require('../services/userService');
+const { registerUser, loginUser, getUserById, updateUser, deleteUser } = require('../services/userService');
 const User = require('../models/User');
 
 const register = async (req, res) => {
@@ -27,20 +27,9 @@ const login = async (req, res) => {
   }
 };
 
-// Handler for GET request
-const getUsers = async (req, res) => {
+const getUserDetailsById = async (req, res) => {
   try {
-    const users = await User.find({});
-    res.status(200).json(users);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-};
-
-// New handler for GET request by ID
-const getUserById = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id).select('-password');
+    const user = await getUserById(req.params.id).select('-password');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -50,9 +39,33 @@ const getUserById = async (req, res) => {
   }
 };
 
+const updateUserController = async (req, res) => {
+  const { id } = req.params;
+  const updateData = req.body;
+
+  try {
+    const updatedUser = await updateUser(id, updateData);
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+const deleteUserController = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await deleteUser(id);
+    res.status(200).json({ message: 'User deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   register,
   login,
-  getUsers,
-  getUserById, // Export the new getUserById function
+  getUserDetailsById,
+  updateUserController,
+  deleteUserController,
 };

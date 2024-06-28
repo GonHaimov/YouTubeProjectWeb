@@ -21,6 +21,8 @@ function Login() {
 
       const data = await response.json();
 
+      console.log('Response Data:', data); // Log the response data to check its contents
+
       if (response.ok) {
         sessionStorage.setItem('loggedInUser', JSON.stringify(data.user)); // Store the logged-in user in sessionStorage
         sessionStorage.setItem('authToken', data.token); // Store the authentication token
@@ -30,6 +32,7 @@ function Login() {
         setLoginError(data.message); // Set login error message
       }
     } catch (error) {
+      console.error('An error occurred:', error);
       setLoginError('An error occurred. Please try again.'); // Set error message for network errors
     }
   };

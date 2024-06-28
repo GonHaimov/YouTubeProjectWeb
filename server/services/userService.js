@@ -1,3 +1,4 @@
+// server/services/userService.js
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -40,7 +41,22 @@ const loginUser = async ({ username, password }) => {
   return { token, user };
 };
 
+const getUserById = async (userId) => {
+  return await User.findById(userId).select('-password');
+};
+
+const updateUser = async (userId, updateData) => {
+  return await User.findByIdAndUpdate(userId, updateData, { new: true });
+};
+
+const deleteUser = async (userId) => {
+  return await User.findByIdAndDelete(userId);
+};
+
 module.exports = {
   registerUser,
   loginUser,
+  getUserById,
+  updateUser,
+  deleteUser,
 };
