@@ -7,6 +7,8 @@ import './App.css';
 import initialVideosData from '../videos.json';
 import Login from '../components/login_register/Login';
 import Register from '../components/login_register/Register';
+import UpdateProfile from '../components/updateProfile/UpdateProfile';
+import DeleteProfile from '../components/deleteProfile/DeleteProfile';
 
 const App = () => {
   const [videos, setVideos] = useState([]);
@@ -155,6 +157,8 @@ const App = () => {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/update-profile" element={<ProtectedRoute component={UpdateProfile} />} />
+          <Route path="/delete-profile" element={<ProtectedRoute component={DeleteProfile} />} />
         </Routes>
       </div>
     </Router>
