@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './UpdateProfile.css';
 
 const UpdateProfile = () => {
   const [username, setUsername] = useState('');
@@ -27,49 +28,93 @@ const UpdateProfile = () => {
       profilePicture,
     };
 
-    try {
-      const response = await fetch(`http://localhost:5000/api/users/${loggedInUser._id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(updatedData),
-      });
+    if (profilePicture && profilePicture instanceof File) {
+      const fileReader = new FileReader();
+      fileReader.onloadend = async () => {
+        updatedData.profilePicture = fileReader.result;
 
-      if (response.ok) {
-        const updatedUser = await response.json();
-        sessionStorage.setItem('loggedInUser', JSON.stringify(updatedUser));
-        setMessage('Profile updated successfully!');
-      } else {
-        setMessage('Failed to update profile');
+        try {
+          const response = await fetch(`http://localhost:5000/api/users/${loggedInUser._id}`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(updatedData),
+          });
+
+          if (response.ok) {
+            const updatedUser = await response.json();
+            sessionStorage.setItem('loggedInUser', JSON.stringify(updatedUser));
+            setMessage('Profile updated successfully!');
+            navigate('/');
+          } else {
+            setMessage('Failed to update profile');
+          }
+        } catch (error) {
+          console.error('Error updating profile:', error);
+          setMessage('An error occurred. Please try again.');
+        }
+      };
+      fileReader.readAsDataURL(profilePicture);
+    } else {
+      try {
+        const response = await fetch(`http://localhost:5000/api/users/${loggedInUser._id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(updatedData),
+        });
+
+        if (response.ok) {
+          const updatedUser = await response.json();
+          sessionStorage.setItem('loggedInUser', JSON.stringify(updatedUser));
+          setMessage('Profile updated successfully!');
+          navigate('/');
+        } else {
+          setMessage('Failed to update profile');
+        }
+      } catch (error) {
+        console.error('Error updating profile:', error);
+        setMessage('An error occurred. Please try again.');
       }
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      setMessage('An error occurred. Please try again.');
     }
   };
 
+  const handleProfilePictureChange = (e) => {
+    setProfilePicture(e.target.files[0]);
+  };
+
   return (
-    <div className="update-profile">
+    <div className="update-profile-container">
       <h2>Update Profile</h2>
-      <input
-        type="text"
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="file"
-        accept="image/*"
-        onChange={(e) => setProfilePicture(e.target.files[0])}
-      />
+      <div className="form-group">
+        <label>Username</label>
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+      </div>
+      <div className="form-group">
+        <label>Email</label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          disabled
+        />
+      </div>
+      <div className="form-group">
+        <label>Profile Picture</label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleProfilePictureChange}
+        />
+      </div>
       <button onClick={handleUpdate}>Update Profile</button>
       {message && <p>{message}</p>}
     </div>

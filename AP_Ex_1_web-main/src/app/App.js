@@ -9,6 +9,8 @@ import Login from '../components/login_register/Login';
 import Register from '../components/login_register/Register';
 import UpdateProfile from '../components/updateProfile/UpdateProfile';
 import DeleteProfile from '../components/deleteProfile/DeleteProfile';
+import Profile from '../components/profile/Profile'; // Import Profile component
+
 
 const App = () => {
   const [videos, setVideos] = useState([]);
@@ -157,6 +159,7 @@ const App = () => {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={<ProtectedRoute component={Profile} onEdit={handleEdit} onDelete={handleDelete} />} />
           <Route path="/update-profile" element={<ProtectedRoute component={UpdateProfile} />} />
           <Route path="/delete-profile" element={<ProtectedRoute component={DeleteProfile} />} />
         </Routes>

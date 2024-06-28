@@ -1,5 +1,6 @@
 const { registerUser, loginUser, getUserById, updateUser, deleteUser } = require('../services/userService');
 const User = require('../models/User');
+const Video = require('../models/Video'); // Import the Video model
 
 const register = async (req, res) => {
   const { username, password, email, profilePicture } = req.body;
@@ -39,6 +40,15 @@ const getUserDetailsById = async (req, res) => {
   }
 };
 
+const getUserVideos = async (req, res) => {
+  try {
+    const videos = await Video.find({ uploader: req.params.id });
+    res.status(200).json(videos);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
 const updateUserController = async (req, res) => {
   const { id } = req.params;
   const updateData = req.body;
@@ -55,8 +65,9 @@ const deleteUserController = async (req, res) => {
   const { id } = req.params;
 
   try {
-    await deleteUser(id);
-    res.status(200).json({ message: 'User deleted successfully' });
+    await Video.deleteMany({ uploader: id }); // Delete user's videos
+    await deleteUser(id); // Delete user
+    res.status(200).json({ message: 'User and associated videos deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -66,6 +77,7 @@ module.exports = {
   register,
   login,
   getUserDetailsById,
+  getUserVideos,
   updateUserController,
   deleteUserController,
 };

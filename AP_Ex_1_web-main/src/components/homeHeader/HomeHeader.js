@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Header.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -82,6 +82,10 @@ const HomeHeader = ({ onSearch, showSearch = true }) => {
     }
   };
 
+  const handleProfileClick = () => {
+    navigate('/profile');
+  };
+
   return (
     <div className="header-container">
       <div onClick={handleLogoClick} style={{ cursor: 'pointer' }}>
@@ -140,8 +144,14 @@ const HomeHeader = ({ onSearch, showSearch = true }) => {
         {!isLoggedIn && <FaUserCircle className="account-icon" />}
         {isLoggedIn ? (
           <>
-            <img src={userImage} alt="User" className="user-image" />
-            <span className="username">{username}</span> {/* Display the username */}
+            <img
+              src={userImage}
+              alt="User"
+              className="user-image"
+              onClick={handleProfileClick}
+              style={{ cursor: 'pointer' }}
+            />
+            <span className="username">{username}</span>
             <button className="btn btn-outline-primary sign-in-button" type="button" onClick={handleSignOut}>
               Sign Out
             </button>

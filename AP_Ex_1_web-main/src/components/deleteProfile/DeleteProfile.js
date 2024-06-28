@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import './DeleteProfile.css';
 
 const DeleteProfile = () => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const DeleteProfile = () => {
         sessionStorage.removeItem('loggedInUser');
         sessionStorage.removeItem('authToken');
         alert('User deleted successfully');
-        navigate('/register');
+        navigate('/');
       } else {
         alert('Failed to delete user');
       }
@@ -31,7 +32,7 @@ const DeleteProfile = () => {
   };
 
   return (
-    <div className="delete-profile">
+    <div className="delete-profile-container">
       <h2>Delete Profile</h2>
       <button onClick={handleDelete}>Delete Profile</button>
     </div>
