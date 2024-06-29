@@ -1,13 +1,18 @@
 [
   {
     "id": "lJYn09tuPw4",
-    "title": "Eden Golan - Huricane",
+    "title": "Eden Golan - Hurricane!!!",
     "url": "/videos.mp4/Eden Golan - Hurricane _ Israel 🇮🇱 _ Official Music Video _ Eurovision 2024.mp4",
     "thumbnail": "https://img.youtube.com/vi/lJYn09tuPw4/0.jpg",
     "views": "1M views",
     "duration": 186,
     "uploadDate": "2 days ago",
-    "comments": []
+    "comments": [],
+    "uploader": {
+      "id": "667ea5a44fb5aa1a8ld6ddd8",
+      "username": "razroy",
+      "profilePicture": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+    }
   },
   {
     "id": "AZMuSrWcsEg",
@@ -17,7 +22,12 @@
     "views": "550K views",
     "duration": 204,
     "uploadDate": "1 week ago",
-    "comments": []
+    "comments": [],
+    "uploader": {
+      "id": "667ea5a44fb5aa1a8ld6ddd8",
+      "username": "razroy",
+      "profilePicture": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+    }
   },
   {
     "id": "xk4_1vDrzzo",
@@ -27,7 +37,12 @@
     "views": "300K views",
     "duration": 10,
     "uploadDate": "3 days ago",
-    "comments": []
+    "comments": [],
+    "uploader": {
+      "id": "667ea5a44fb5aa1a8ld6ddd8",
+      "username": "razroy",
+      "profilePicture": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+    }
   },
   {
     "id": "mRUc5sXmlm8",
@@ -37,7 +52,12 @@
     "views": "800K views",
     "duration": 10,
     "uploadDate": "5 days ago",
-    "comments": []
+    "comments": [],
+    "uploader": {
+      "id": "667ea5a44fb5aa1a8ld6ddd8",
+      "username": "razroy",
+      "profilePicture": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+    }
   },
   {
     "id": "6VpzTnosBjA",
@@ -47,17 +67,27 @@
     "views": "400K views",
     "duration": 214,
     "uploadDate": "1 month ago",
-    "comments": []
+    "comments": [],
+    "uploader": {
+      "id": "667ea5a44fb5aa1a8ld6ddd8",
+      "username": "razroy",
+      "profilePicture": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+    }
   },
   {
     "id": "nA8wHQvHPJU",
-    "title": "Coca Cola comercial",
+    "title": "Coca Cola commercial",
     "url": "/videos.mp4/cocacola.mp4",
     "thumbnail": "https://img.youtube.com/vi/g4xs_5rZdos/hqdefault.jpg",
     "views": "1.2M views",
     "duration": 11,
     "uploadDate": "2 weeks ago",
-    "comments": []
+    "comments": [],
+    "uploader": {
+      "id": "667ee8b9c5d20ef55b0f90ca",
+      "username": "gonha",
+      "profilePicture": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+    }
   },
   {
     "id": "pz6HWpCRsc4",
@@ -67,7 +97,12 @@
     "views": "600K views",
     "duration": 251,
     "uploadDate": "3 weeks ago",
-    "comments": []
+    "comments": [],
+    "uploader": {
+      "id": "667ee8b9c5d20ef55b0f90ca",
+      "username": "gonha",
+      "profilePicture": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+    }
   },
   {
     "id": "Ka_jidh9ReU",
@@ -77,7 +112,12 @@
     "views": "700K views",
     "duration": 200,
     "uploadDate": "4 days ago",
-    "comments": []
+    "comments": [],
+    "uploader": {
+      "id": "667ee8b9c5d20ef55b0f90ca",
+      "username": "gonha",
+      "profilePicture": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+    }
   },
   {
     "id": "y_sHzgKo0i4",
@@ -87,9 +127,13 @@
     "views": "350K views",
     "duration": 222,
     "uploadDate": "2 months ago",
-    "comments": []
+    "comments": [],
+    "uploader": {
+      "id": "667ee8b9c5d20ef55b0f90ca",
+      "username": "gonha",
+      "profilePicture": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+    }
   },
-  
   {
     "id": "XEjLoHdbVeE",
     "title": "ABBA - Gimme! Gimme! Gimme! (A Man After Midnight)",
@@ -98,6 +142,11 @@
     "views": "2M views",
     "duration": 209,
     "uploadDate": "1 year ago",
-    "comments": []
+    "comments": [],
+    "uploader": {
+      "id": "667ee8b9c5d20ef55b0f90ca",
+      "username": "gonha",
+      "profilePicture": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD..."
+    }
   }
 ]

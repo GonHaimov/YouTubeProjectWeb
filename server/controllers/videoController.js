@@ -1,4 +1,3 @@
-// server/controllers/videoController.js
 const { getVideos, createVideo, getUserVideos, getVideoById, updateVideo, deleteVideo } = require('../services/videoService');
 
 const getVideosController = async (req, res) => {

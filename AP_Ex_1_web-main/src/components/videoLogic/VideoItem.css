@@ -51,9 +51,23 @@
   color: #808080; /* Gray text */
   margin-top: 0; /* No margin */
 }
+
 .video-item .edited-thumbnail {
   width: 100px;
   height: auto;
   margin-top: 10px;
 }
 
+.uploader-info {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.uploader-profile-picture {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}

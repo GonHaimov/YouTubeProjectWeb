@@ -1,4 +1,3 @@
-// server/services/videoService.js
 const Video = require('../models/Video');
 
 const getVideos = async () => {
@@ -21,19 +20,19 @@ const createVideo = async ({ title, url, thumbnail, views, duration, uploadDate,
 };
 
 const getUserVideos = async (userId) => {
-  return await Video.find({ uploader: userId });
+  return await Video.find({ 'uploader.id': userId });
 };
 
 const getVideoById = async (userId, videoId) => {
-  return await Video.findOne({ _id: videoId, uploader: userId });
+  return await Video.findOne({ _id: videoId, 'uploader.id': userId });
 };
 
 const updateVideo = async (userId, videoId, updateData) => {
-  return await Video.findOneAndUpdate({ _id: videoId, uploader: userId }, updateData, { new: true });
+  return await Video.findOneAndUpdate({ _id: videoId, 'uploader.id': userId }, updateData, { new: true });
 };
 
 const deleteVideo = async (userId, videoId) => {
-  return await Video.findOneAndDelete({ _id: videoId, uploader: userId });
+  return await Video.findOneAndDelete({ _id: videoId, 'uploader.id': userId });
 };
 
 module.exports = {
