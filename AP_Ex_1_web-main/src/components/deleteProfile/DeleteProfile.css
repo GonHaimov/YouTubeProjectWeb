@@ -1,20 +1,45 @@
 .delete-profile-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
-  }
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.header-logo {
+  position: absolute;
+  top: 10px;
+  left: 40px;
+  cursor: pointer;
+  height: 90px; /* Fixed height for the logo */
+  margin-right: 10px;
   
-  .delete-profile-container button {
-    padding: 10px 20px;
-    background-color: #ff4d4d;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .delete-profile-container button:hover {
-    background-color: #cc0000;
-  }
-  
+}
+
+.header-logo svg {
+  height: 100%;
+  width: auto;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; /* Ensure the content is centered vertically */
+  margin-top: 100px; /* Add margin to move content down */
+}
+
+.delete-profile-container button {
+  padding: 10px 20px;
+  background-color: #ff4d4d;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+
+}
+
+.delete-profile-container button:hover {
+  background-color: #cc0000;
+}

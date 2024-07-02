@@ -1,8 +1,21 @@
 .profile-container {
-  margin: 0 auto;
   padding: 20px;
   width: 100%;
-  max-width: 1200px;
+}
+
+.header-logo {
+  display: flex;
+  justify-content: flex-start; /* Align to the left */
+  align-items: center;
+  cursor: pointer;
+  height: 80px; /* Increase size of logo */
+  padding-left: 20px;
+  margin-bottom: 20px; /* Add space below the logo */
+}
+
+.header-logo svg {
+  height: 80px; /* Adjust the height as needed */
+  width: auto;
 }
 
 .profile-info {

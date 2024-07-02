@@ -16,13 +16,14 @@ const App = () => {
 
   useEffect(() => {
     const storedVideos = JSON.parse(sessionStorage.getItem('uploadedVideos')) || [];
+    console.log('Stored videos on load:', storedVideos);
     setVideos([...initialVideosData, ...storedVideos]);
   }, []);
 
   const updateStoredVideos = (updatedVideos) => {
-    const videosToStore = updatedVideos.filter(video => video.uploader);
     try {
-      sessionStorage.setItem('uploadedVideos', JSON.stringify(videosToStore));
+      sessionStorage.setItem('uploadedVideos', JSON.stringify(updatedVideos));
+      console.log('Updated stored videos:', updatedVideos);
     } catch (e) {
       console.error('Error saving to sessionStorage', e);
     }
@@ -31,26 +32,23 @@ const App = () => {
   const handleUpload = (newVideo) => {
     const storedVideos = JSON.parse(sessionStorage.getItem('uploadedVideos')) || [];
     const updatedVideos = [newVideo, ...storedVideos];
-    setVideos(prevVideos => {
-      const newVideos = [newVideo, ...prevVideos.filter(video => video.uploader.id !== newVideo.uploader.id || video.id !== newVideo.id)];
-      updateStoredVideos([...storedVideos, newVideo]);
-      return newVideos;
-    });
+    console.log('New video:', newVideo);
+    console.log('Updated videos before setting state:', updatedVideos);
+    setVideos(prevVideos => [...initialVideosData, ...updatedVideos]);
+    updateStoredVideos([...storedVideos, newVideo]);
   };
 
   const handleEdit = (editedVideo) => {
-    const storedVideos = JSON.parse(sessionStorage.getItem('uploadedVideos')) || [];
-    const updatedVideos = storedVideos.map((video) =>
+    const updatedVideos = videos.map((video) =>
       video.id === editedVideo.id ? editedVideo : video
     );
-    setVideos([...initialVideosData, ...updatedVideos]);
+    setVideos(updatedVideos);
     updateStoredVideos(updatedVideos);
   };
 
   const handleDelete = (id) => {
-    const storedVideos = JSON.parse(sessionStorage.getItem('uploadedVideos')) || [];
-    const updatedVideos = storedVideos.filter((video) => video.id !== id);
-    setVideos([...initialVideosData, ...updatedVideos]);
+    const updatedVideos = videos.filter((video) => video.id !== id);
+    setVideos(updatedVideos);
     updateStoredVideos(updatedVideos);
   };
 
@@ -160,7 +158,7 @@ const App = () => {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/profile" element={<ProtectedRoute component={Profile} videos={videos} onEdit={handleEdit} onDelete={handleDelete} />} />
+          <Route path="/profile" element={<ProtectedRoute component={Profile} videos={videos} onEdit={handleEdit} onDelete={handleDelete} loggedInUser={JSON.parse(sessionStorage.getItem('loggedInUser'))} />} />
           <Route path="/update-profile" element={<ProtectedRoute component={UpdateProfile} />} />
           <Route path="/delete-profile" element={<ProtectedRoute component={DeleteProfile} />} />
         </Routes>

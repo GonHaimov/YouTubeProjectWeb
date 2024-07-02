@@ -4,6 +4,21 @@
     align-items: center;
     padding: 20px;
   }
+
+  .header-logo {
+    position: absolute;
+    top: 10px;
+    left: 40px;
+    cursor: pointer;
+    height: 90px; /* Fixed height for the logo */
+    margin-right: 10px;
+    
+  }
+  
+  .header-logo svg {
+    height: 100%;
+    width: auto;
+  }
   
   .user-info {
     display: flex;

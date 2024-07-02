@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './UpdateProfile.css';
+import { ReactComponent as YouTubeLogo } from '../../assets/youtube-logo-light.svg';
 
 const UpdateProfile = () => {
   const [username, setUsername] = useState('');
@@ -87,8 +88,16 @@ const UpdateProfile = () => {
     setProfilePicture(e.target.files[0]);
   };
 
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
+
   return (
     <div className="update-profile-container">
+      <div className="header-logo" onClick={handleLogoClick}>
+        <YouTubeLogo />
+      </div>
       <h2>Update Profile</h2>
       <div className="form-group">
         <label>Username</label>

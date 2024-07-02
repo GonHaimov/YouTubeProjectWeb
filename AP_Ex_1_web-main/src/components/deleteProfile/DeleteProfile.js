@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './DeleteProfile.css';
+import { ReactComponent as YouTubeLogo } from '../../assets/youtube-logo-light.svg';
 
 const DeleteProfile = () => {
   const navigate = useNavigate();
@@ -31,8 +32,15 @@ const DeleteProfile = () => {
     }
   };
 
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
   return (
     <div className="delete-profile-container">
+      <div className="header-logo" onClick={handleLogoClick}>
+        <YouTubeLogo />
+      </div>
       <h2>Delete Profile</h2>
       <button onClick={handleDelete}>Delete Profile</button>
     </div>
