@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useNavigate} from 'react-router-dom';
 import HomePage from '../pages/homePage/HomePage';
 import UploadScreen from '../pages/uploadScreen/UploadScreen';
 import WatchVideoPage from '../pages/watchVideoPage/WatchVideoPage';
@@ -10,7 +10,6 @@ import Register from '../components/login_register/Register';
 import UpdateProfile from '../components/updateProfile/UpdateProfile';
 import DeleteProfile from '../components/deleteProfile/DeleteProfile';
 import Profile from '../components/profile/Profile'; // Import Profile component
-
 
 const App = () => {
   const [videos, setVideos] = useState([]);
@@ -45,7 +44,6 @@ const App = () => {
     updateStoredVideos(updatedVideos);
   };
   
-
   const handleDelete = (id) => {
     const storedVideos = JSON.parse(sessionStorage.getItem('uploadedVideos')) || [];
     const updatedVideos = storedVideos.filter((video) => video.id !== id);
@@ -159,7 +157,7 @@ const App = () => {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/profile" element={<ProtectedRoute component={Profile} onEdit={handleEdit} onDelete={handleDelete} />} />
+          <Route path="/profile" element={<ProtectedRoute component={Profile} videos={videos} onEdit={handleEdit} onDelete={handleDelete} />} />
           <Route path="/update-profile" element={<ProtectedRoute component={UpdateProfile} />} />
           <Route path="/delete-profile" element={<ProtectedRoute component={DeleteProfile} />} />
         </Routes>

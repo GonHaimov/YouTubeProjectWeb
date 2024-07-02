@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Profile.css';
+import VideoItem from '../../components/videoLogic/VideoItem';
 
-const Profile = () => {
+const Profile = ({ videos, onEdit, onDelete, loggedInUser }) => {
   const [user, setUser] = useState(null);
+  const [userVideos, setUserVideos] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -12,8 +14,10 @@ const Profile = () => {
 
     if (loggedInUser && token) {
       setUser(loggedInUser);
+      const filteredVideos = videos.filter(video => video.uploader.id === loggedInUser.id);
+      setUserVideos(filteredVideos);
     }
-  }, []);
+  }, [videos]);
 
   const handleUpdateProfile = () => {
     navigate('/update-profile');
@@ -21,6 +25,10 @@ const Profile = () => {
 
   const handleDeleteProfile = () => {
     navigate('/delete-profile');
+  };
+
+  const handleVideoSelect = (selectedVideo) => {
+    navigate(`/watch/${selectedVideo.id}`);
   };
 
   if (!user) {
@@ -35,6 +43,22 @@ const Profile = () => {
         <p>{user.email}</p>
         <button onClick={handleUpdateProfile}>Update Profile</button>
         <button onClick={handleDeleteProfile}>Delete Profile</button>
+      </div>
+
+      <div className="user-videos">
+        <h3>Uploaded Videos</h3>
+        <div className="video-list">
+          {userVideos.map((video) => (
+            <VideoItem
+              key={video.id}
+              video={video}
+              onVideoSelect={handleVideoSelect}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              loggedInUser={loggedInUser}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
