@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, useNavigate} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import HomePage from '../pages/homePage/HomePage';
 import UploadScreen from '../pages/uploadScreen/UploadScreen';
 import WatchVideoPage from '../pages/watchVideoPage/WatchVideoPage';
@@ -31,8 +31,11 @@ const App = () => {
   const handleUpload = (newVideo) => {
     const storedVideos = JSON.parse(sessionStorage.getItem('uploadedVideos')) || [];
     const updatedVideos = [newVideo, ...storedVideos];
-    setVideos([...videos, ...updatedVideos]);
-    updateStoredVideos(updatedVideos);
+    setVideos(prevVideos => {
+      const newVideos = [newVideo, ...prevVideos.filter(video => video.uploader.id !== newVideo.uploader.id || video.id !== newVideo.id)];
+      updateStoredVideos([...storedVideos, newVideo]);
+      return newVideos;
+    });
   };
 
   const handleEdit = (editedVideo) => {
@@ -43,7 +46,7 @@ const App = () => {
     setVideos([...initialVideosData, ...updatedVideos]);
     updateStoredVideos(updatedVideos);
   };
-  
+
   const handleDelete = (id) => {
     const storedVideos = JSON.parse(sessionStorage.getItem('uploadedVideos')) || [];
     const updatedVideos = storedVideos.filter((video) => video.id !== id);
