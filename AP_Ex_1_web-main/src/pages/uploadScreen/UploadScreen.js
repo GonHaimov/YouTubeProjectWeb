@@ -29,7 +29,11 @@ const UploadScreen = ({ onUpload }) => {
         duration: parseInt(duration, 10),
         uploadDate: 'Just now',
         comments: [],
-        uploader: loggedInUser.username,
+        uploader: {
+          id: loggedInUser.id,
+          username: loggedInUser.username,
+          profilePicture: loggedInUser.profilePicture, 
+        },
       };
 
       onUpload(newVideo);

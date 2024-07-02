@@ -34,16 +34,14 @@ const VideoItem = ({ video, onVideoSelect, onEdit, onDelete, loggedInUser }) => 
     }
   };
 
-  const handleCardClick = (e) => {
-    if (!isEditing) {
-      onVideoSelect(video);
-    }
+  const handleThumbnailClick = () => {
+    onVideoSelect(video);
   };
 
   return (
-    <div className="video-item" style={{ cursor: 'pointer' }}>
-      <div className="card" onClick={handleCardClick}>
-        <div className="video-image-container">
+    <div className="video-item">
+      <div className="card">
+        <div className="video-image-container" onClick={handleThumbnailClick}>
           <img src={video.thumbnail} className="card-img-top" alt={video.title} />
           <span className="video-duration">{formatDuration(video.duration)}</span>
         </div>
@@ -54,7 +52,11 @@ const VideoItem = ({ video, onVideoSelect, onEdit, onDelete, loggedInUser }) => 
               <p className="video-info">
                 {video.views} • {video.uploadDate}
               </p>
-              {loggedInUser && video.uploader === loggedInUser.username && (
+              <div className="uploader-info">
+                <img src={video.uploader.profilePicture} alt={video.uploader.username} className="uploader-profile-picture" />
+                <span>{video.uploader.username}</span>
+              </div>
+              {loggedInUser && video.uploader.username === loggedInUser.username && (
                 <div className="video-actions">
                   <button onClick={handleEdit}>Edit</button>
                   <button onClick={(e) => { e.stopPropagation(); onDelete(video.id); }}>Delete</button>

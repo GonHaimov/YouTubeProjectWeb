@@ -1,6 +1,5 @@
 .video-item {
   position: relative;
-  cursor: pointer;
   margin-bottom: 10px; /* Adjust margin as needed */
 }
 
@@ -10,13 +9,15 @@
   transition: transform 0.2s, box-shadow 0.2s; /* Transition for hover effect */
 }
 
-.card:hover {
+.card:hover .video-image-container {
   transform: scale(1.05); /* Slightly enlarge the video */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for lighting effect */
 }
 
 .video-image-container {
   position: relative;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s; /* Transition for hover effect */
 }
 
 .card-img-top {
@@ -62,6 +63,7 @@
   display: flex;
   align-items: center;
   margin-top: 10px;
+  font-weight: bold;
 }
 
 .uploader-profile-picture {
