@@ -5,17 +5,19 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaSearch, FaMicrophone, FaBell, FaPlus, FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
 import { ReactComponent as YouTubeLogoLight } from '../../assets/youtube-logo-light.svg';
 import YouTubeLogoDark from '../../assets/youtube-logo-dark.jpeg';
-
 import DarkModeToggle from '../darkMode/DarkModeToggle';
 
 const HomeHeader = ({ onSearch, showSearch = true }) => {
   const [query, setQuery] = useState('');
   const [recentSearches, setRecentSearches] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to manage login status
-  const [userImage, setUserImage] = useState(null); // State to store user image URL
-  const [username, setUsername] = useState(''); // State to store username
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const savedMode = sessionStorage.getItem('darkMode');
+    return savedMode === 'true' || false;
+  });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userImage, setUserImage] = useState(null);
+  const [username, setUsername] = useState('');
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
@@ -24,9 +26,15 @@ const HomeHeader = ({ onSearch, showSearch = true }) => {
     if (user) {
       setIsLoggedIn(true);
       setUserImage(user.profilePicture);
-      setUsername(user.username); // Set username from the stored user data
+      setUsername(user.username);
     }
-  }, []);
+
+    if (isDarkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [isDarkMode]);
 
   const handleSearch = (event) => {
     event.preventDefault();
@@ -59,11 +67,14 @@ const HomeHeader = ({ onSearch, showSearch = true }) => {
   };
 
   const handleToggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    document.body.classList.toggle('dark-mode');
+    setIsDarkMode(prevMode => !prevMode);
+    sessionStorage.setItem('darkMode', !isDarkMode);
   };
 
   const handleSignIn = () => {
+    sessionStorage.removeItem('darkMode'); // Remove dark mode state on login
+    setIsDarkMode(false); // Ensure light mode on login
+    document.body.classList.remove('dark-mode'); // Remove dark mode class from body
     navigate('/login');
   };
 
@@ -71,6 +82,9 @@ const HomeHeader = ({ onSearch, showSearch = true }) => {
     setIsLoggedIn(false);
     setUserImage(null);
     sessionStorage.removeItem('loggedInUser');
+    sessionStorage.removeItem('darkMode'); // Remove dark mode state on logout
+    setIsDarkMode(false); // Ensure light mode on logout
+    document.body.classList.remove('dark-mode'); // Remove dark mode class from body
     navigate('/login');
   };
 
