@@ -4,16 +4,26 @@ const getVideos = async () => {
   return await Video.find().sort({ views: -1 }).limit(20);
 };
 
-const createVideo = async ({ title, url, thumbnail, views, duration, uploadDate, comments, uploader }) => {
+const createVideo = async ({ id, title, url, thumbnail, views, duration, uploadDate, comments = [], uploader }) => {
+  const formattedComments = comments.map(comment => ({
+    text: comment.text,
+    user: comment.user, // Assuming comment.user contains the ObjectId of the user
+  }));
+
   const newVideo = new Video({
+    id,
     title,
     url,
     thumbnail,
     views,
     duration,
     uploadDate,
-    comments,
-    uploader,
+    comments: formattedComments,
+    uploader: {
+      id: uploader.id,
+      username: uploader.username,
+      profilePicture: uploader.profilePicture,
+    },
   });
 
   return await newVideo.save();

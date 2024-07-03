@@ -10,10 +10,20 @@ const getVideosController = async (req, res) => {
 };
 
 const createVideoController = async (req, res) => {
-  const { title, url, thumbnail, views, duration, uploadDate, comments, uploader } = req.body;
+  const { id, title, url, thumbnail, views, duration, uploadDate, comments, uploader } = req.body;
 
   try {
-    const savedVideo = await createVideo({ title, url, thumbnail, views, duration, uploadDate, comments, uploader });
+    const savedVideo = await createVideo({
+      id,
+      title,
+      url,
+      thumbnail,
+      views,
+      duration,
+      uploadDate,
+      comments,
+      uploader
+    });
     res.status(201).json(savedVideo);
   } catch (err) {
     res.status(400).json({ message: err.message });
