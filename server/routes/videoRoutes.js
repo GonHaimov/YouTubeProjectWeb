@@ -1,4 +1,3 @@
-// server/routes/videoRoutes.js
 const express = require('express');
 const {
   getVideosController,
