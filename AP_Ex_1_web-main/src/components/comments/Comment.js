@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ReplyForm from './ReplyForm';
 import './Comment.css';
+import axios from 'axios';
 
 const Comment = ({ comment, onEdit, onDelete }) => {
   const [isReplying, setIsReplying] = useState(false);
@@ -27,9 +28,23 @@ const Comment = ({ comment, onEdit, onDelete }) => {
     setIsReplying(false);
   };
 
-  const handleSaveEdit = () => {
-    onEdit(comment.id, editedText);
-    setIsEditing(false);
+  const handleSaveEdit = async () => {
+    try {
+      await axios.patch(`http://localhost:5000/api/comments/${comment._id}`, { text: editedText });
+      onEdit(comment._id, editedText);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error editing comment:', error);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:5000/api/comments/${comment._id}`);
+      onDelete(comment._id);
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+    }
   };
 
   return (
@@ -62,14 +77,14 @@ const Comment = ({ comment, onEdit, onDelete }) => {
         {loggedInUser && (
           <>
             <button onClick={() => setIsEditing(true)}>Edit</button>
-            <button onClick={() => onDelete(comment.id)}>Delete</button>
+            <button onClick={handleDelete}>Delete</button>
           </>
         )}
       </div>
       {isReplying && <ReplyForm onSubmit={handleReply} />}
       <div className="replies">
         {replies.map((reply) => (
-          <Comment key={reply.id} comment={reply} onEdit={onEdit} onDelete={onDelete} />
+          <Comment key={reply._id} comment={reply} onEdit={onEdit} onDelete={onDelete} />
         ))}
       </div>
     </div>

@@ -3,24 +3,42 @@ import HomeHeader from '../../components/homeHeader/HomeHeader';
 import Sidebar from '../../components/sideBar/Sidebar';
 import ButtonBar from '../../components/ButtonsBar/ButtonBar';
 import VideoList from '../../components/videoLogic/VideoList';
-import initialVideosData from '../../videos.json';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const HomePage = ({ videos, onSearch, onEdit, onDelete }) => {
+const HomePage = ({ onSearch, onEdit, onDelete }) => {
   const [filteredVideos, setFilteredVideos] = useState([]);
+  const [allVideos, setAllVideos] = useState([]);
   const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
   const navigate = useNavigate();
+
   useEffect(() => {
-    setFilteredVideos(videos.length ? videos : initialVideosData);
-  }, [videos]);
+    const fetchVideos = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/videos');
+        setAllVideos(response.data);
+        setFilteredVideos(response.data); // Initialize filteredVideos with allVideos
+      } catch (error) {
+        console.error('Error fetching videos:', error);
+      }
+    };
+    fetchVideos();
+  }, []);
+  
+  const handleSearch = (query) => {
+    const results = allVideos.filter((video) =>
+      video.title.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredVideos(results);
+  };
 
   const handleVideoSelect = (selectedVideo) => {
-    navigate(`/watch/${selectedVideo.id}`);
+    navigate(`/watch/${selectedVideo._id}`, { state: { video: selectedVideo } });
   };
 
   return (
     <div className="container">
-      <HomeHeader onSearch={onSearch} />
+      <HomeHeader onSearch={handleSearch} />
       <div className="main-content-container">
         <Sidebar />
         <div className="content-container">

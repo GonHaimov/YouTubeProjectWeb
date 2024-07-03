@@ -2,41 +2,54 @@ import React, { useState } from 'react';
 import CommentForm from './CommentForm';
 import Comment from './Comment';
 import './CommentSection.css';
+import axios from 'axios';
 
-const CommentSection = ({ comments, onAddComment, onEditComment, onDeleteComment }) => {
+const CommentSection = ({ videoId, comments, onAddComment, onEditComment, onDeleteComment }) => {
   const [commentList, setCommentList] = useState(comments || []);
   const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
 
-  const handleAddComment = (newCommentText) => {
+  const handleAddComment = async (newCommentText) => {
     if (!loggedInUser) {
       alert("You must be logged in to comment.");
       return;
     }
 
-    const newComment = {
-      id: Date.now().toString(),
-      text: newCommentText,
-      likes: 0,
-      replies: [],
-      user: loggedInUser,
-    };
-    const updatedComments = [...commentList, newComment];
-    setCommentList(updatedComments);
-    onAddComment(newComment);
+    try {
+      const response = await axios.post(`http://localhost:5000/api/videos/${videoId}/comments`, {
+        text: newCommentText,
+        user: loggedInUser._id,
+      });
+      const newComment = response.data;
+      const updatedComments = [...commentList, newComment];
+      setCommentList(updatedComments);
+      onAddComment(newComment);
+    } catch (error) {
+      console.error('Error adding comment:', error);
+    }
   };
 
-  const handleEditComment = (commentId, newText) => {
-    const updatedComments = commentList.map((comment) =>
-      comment.id === commentId ? { ...comment, text: newText } : comment
-    );
-    setCommentList(updatedComments);
-    onEditComment(commentId, newText);
+  const handleEditComment = async (commentId, newText) => {
+    try {
+      await axios.patch(`http://localhost:5000/api/comments/${commentId}`, { text: newText });
+      const updatedComments = commentList.map((comment) =>
+        comment._id === commentId ? { ...comment, text: newText } : comment
+      );
+      setCommentList(updatedComments);
+      onEditComment(commentId, newText);
+    } catch (error) {
+      console.error('Error editing comment:', error);
+    }
   };
 
-  const handleDeleteComment = (commentId) => {
-    const updatedComments = commentList.filter((comment) => comment.id !== commentId);
-    setCommentList(updatedComments);
-    onDeleteComment(commentId);
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/comments/${commentId}`);
+      const updatedComments = commentList.filter((comment) => comment._id !== commentId);
+      setCommentList(updatedComments);
+      onDeleteComment(commentId);
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+    }
   };
 
   return (
@@ -45,7 +58,7 @@ const CommentSection = ({ comments, onAddComment, onEditComment, onDeleteComment
       {loggedInUser && <CommentForm onSubmit={handleAddComment} />}
       {commentList.map((comment) => (
         <Comment
-          key={comment.id}
+          key={comment._id}
           comment={comment}
           onEdit={handleEditComment}
           onDelete={handleDeleteComment}

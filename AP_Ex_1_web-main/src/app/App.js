@@ -1,127 +1,111 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import HomePage from '../pages/homePage/HomePage';
 import UploadScreen from '../pages/uploadScreen/UploadScreen';
 import WatchVideoPage from '../pages/watchVideoPage/WatchVideoPage';
 import './App.css';
-import initialVideosData from '../videos.json';
 import Login from '../components/login_register/Login';
 import Register from '../components/login_register/Register';
 import UpdateProfile from '../components/updateProfile/UpdateProfile';
 import DeleteProfile from '../components/deleteProfile/DeleteProfile';
-import Profile from '../components/profile/Profile'; // Import Profile component
+import Profile from '../components/profile/Profile';
 
 const App = () => {
   const [videos, setVideos] = useState([]);
 
   useEffect(() => {
-    const storedVideos = JSON.parse(sessionStorage.getItem('uploadedVideos')) || [];
-    console.log('Stored videos on load:', storedVideos);
-    setVideos([...initialVideosData, ...storedVideos]);
+    const fetchVideos = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/videos');
+        console.log(response);
+        setVideos(response.data);
+      } catch (error) {
+        console.error('Error fetching videos:', error);
+      }
+    };
+
+    fetchVideos();
   }, []);
 
-  const updateStoredVideos = (updatedVideos) => {
+  const handleUpload = async (newVideo) => {
     try {
-      sessionStorage.setItem('uploadedVideos', JSON.stringify(updatedVideos));
-      console.log('Updated stored videos:', updatedVideos);
-    } catch (e) {
-      console.error('Error saving to sessionStorage', e);
+      const response = await axios.post(`http://localhost:5000/api/users/${newVideo.uploader.id}/videos`, newVideo);
+      setVideos(prevVideos => [response.data, ...prevVideos]);
+    } catch (error) {
+      console.error('Error uploading video:', error);
     }
   };
 
-  const handleUpload = (newVideo) => {
-    const storedVideos = JSON.parse(sessionStorage.getItem('uploadedVideos')) || [];
-    const updatedVideos = [newVideo, ...storedVideos];
-    console.log('New video:', newVideo);
-    console.log('Updated videos before setting state:', updatedVideos);
-    setVideos(prevVideos => [...initialVideosData, ...updatedVideos]);
-    updateStoredVideos([...storedVideos, newVideo]);
+  const handleEdit = async (editedVideo) => {
+    try {
+      const response = await axios.patch(`http://localhost:5000/api/users/${editedVideo.uploader.id}/videos/${editedVideo.id}`, editedVideo);
+      setVideos(videos.map((video) => (video.id === editedVideo.id ? response.data : video)));
+    } catch (error) {
+      console.error('Error editing video:', error);
+    }
   };
 
-  const handleEdit = (editedVideo) => {
-    const updatedVideos = videos.map((video) =>
-      video.id === editedVideo.id ? editedVideo : video
-    );
-    setVideos(updatedVideos);
-    updateStoredVideos(updatedVideos);
+  const handleDelete = async (id) => {
+    try {
+      const video = videos.find(v => v.id === id);
+      if (!video) return;
+      await axios.delete(`http://localhost:5000/api/users/${video.uploader.id}/videos/${id}`);
+      setVideos(videos.filter((video) => video.id !== id));
+    } catch (error) {
+      console.error('Error deleting video:', error);
+    }
   };
 
-  const handleDelete = (id) => {
-    const updatedVideos = videos.filter((video) => video.id !== id);
-    setVideos(updatedVideos);
-    updateStoredVideos(updatedVideos);
+  const handleSearch = async (query) => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/videos', { params: { q: query } });
+      setVideos(response.data);
+    } catch (error) {
+      console.error('Error searching videos:', error);
+    }
   };
 
-  const handleSearch = (query) => {
-    const results = [...initialVideosData, ...JSON.parse(sessionStorage.getItem('uploadedVideos') || '[]')].filter((video) =>
-      video.title.toLowerCase().includes(query.toLowerCase())
-    );
-    setVideos(results);
+  const handleAddComment = async (videoId, comment) => {
+    try {
+      const response = await axios.post(`http://localhost:5000/api/videos/${videoId}/comments`, comment);
+      setVideos(videos.map((video) => (video.id === videoId ? response.data : video)));
+    } catch (error) {
+      console.error('Error adding comment:', error);
+    }
   };
 
-  const handleAddComment = (videoId, updatedComments) => {
-    const updatedVideos = videos.map((video) => {
-      if (video.id === videoId) {
-        return {
-          ...video,
-          comments: updatedComments,
-        };
-      }
-      return video;
-    });
-    setVideos(updatedVideos);
-    updateStoredVideos(updatedVideos);
+  const handleEditComment = async (videoId, commentId, newText) => {
+    try {
+      const response = await axios.patch(`http://localhost:5000/api/videos/${videoId}/comments/${commentId}`, { text: newText });
+      setVideos(videos.map((video) => (video.id === videoId ? response.data : video)));
+    } catch (error) {
+      console.error('Error editing comment:', error);
+    }
   };
 
-  const handleEditComment = (videoId, commentId, newText) => {
-    const updatedVideos = videos.map((video) => {
-      if (video.id === videoId) {
-        return {
-          ...video,
-          comments: video.comments.map((comment) =>
-            comment.id === commentId ? { ...comment, text: newText } : comment
-          ),
-        };
-      }
-      return video;
-    });
-    setVideos(updatedVideos);
-    updateStoredVideos(updatedVideos);
+  const handleDeleteComment = async (videoId, commentId) => {
+    try {
+      const response = await axios.delete(`http://localhost:5000/api/videos/${videoId}/comments/${commentId}`);
+      setVideos(videos.map((video) => (video.id === videoId ? response.data : video)));
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+    }
   };
 
-  const handleDeleteComment = (videoId, commentId) => {
-    const updatedVideos = videos.map((video) => {
-      if (video.id === videoId) {
-        return {
-          ...video,
-          comments: video.comments.filter((comment) => comment.id !== commentId),
-        };
-      }
-      return video;
-    });
-    setVideos(updatedVideos);
-    updateStoredVideos(updatedVideos);
-  };
-
-  const handleLike = (videoId) => {
+  const handleLike = async (videoId) => {
     const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
     if (!loggedInUser) {
       alert('You must be logged in to like a video.');
       return;
     }
 
-    const updatedVideos = videos.map((video) => {
-      if (video.id === videoId) {
-        const userLiked = video.likes && video.likes.includes(loggedInUser.username);
-        return {
-          ...video,
-          likes: userLiked ? video.likes.filter(user => user !== loggedInUser.username) : [...(video.likes || []), loggedInUser.username]
-        };
-      }
-      return video;
-    });
-    setVideos(updatedVideos);
-    updateStoredVideos(updatedVideos);
+    try {
+      const response = await axios.post(`http://localhost:5000/api/videos/${videoId}/like`, { userId: loggedInUser.id });
+      setVideos(videos.map((video) => (video.id === videoId ? response.data : video)));
+    } catch (error) {
+      console.error('Error liking video:', error);
+    }
   };
 
   return (

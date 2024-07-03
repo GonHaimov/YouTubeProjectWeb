@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const videoSchema = new mongoose.Schema({
-  id: { type: String, required: true },
   title: { type: String, required: true },
   url: { type: String, required: true },
   thumbnail: { type: String, required: true },
@@ -13,7 +12,7 @@ const videoSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
   }],
   uploader: {
-    id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // this is the one that upload the video.
     username: { type: String, required: true },
     profilePicture: { type: String, required: true }
   }

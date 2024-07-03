@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './Profile.css';
 import VideoItem from '../../components/videoLogic/VideoItem';
 import { ReactComponent as YouTubeLogo } from '../../assets/youtube-logo-light.svg';
 
-const Profile = ({ videos, onEdit, onDelete, loggedInUser }) => {
+const Profile = ({ onEdit, onDelete, loggedInUser }) => {
   const [user, setUser] = useState(null);
   const [userVideos, setUserVideos] = useState([]);
   const navigate = useNavigate();
@@ -19,11 +20,23 @@ const Profile = ({ videos, onEdit, onDelete, loggedInUser }) => {
 
   useEffect(() => {
     if (user) {
-      const filteredVideos = videos.filter(video => video.uploader.id === user.id);
-      console.log('Profile.js - Filtered videos for user:', filteredVideos);
-      setUserVideos(filteredVideos);
+      const fetchUserVideos = async () => {
+        try {
+          const response = await axios.get(`http://localhost:5000/api/users/${user._id}/videos`, {
+            headers: {
+              Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+            },
+          });
+          console.log('Profile.js - Fetched user videos:', response.data);
+          setUserVideos(response.data);
+        } catch (error) {
+          console.error('Error fetching user videos:', error);
+        }
+      };
+
+      fetchUserVideos();
     }
-  }, [videos, user]);
+  }, [user]);
 
   const handleUpdateProfile = () => {
     navigate('/update-profile');
@@ -38,7 +51,7 @@ const Profile = ({ videos, onEdit, onDelete, loggedInUser }) => {
   };
 
   const handleVideoSelect = (selectedVideo) => {
-    navigate(`/watch/${selectedVideo.id}`);
+    navigate(`/watch/${selectedVideo._id}`);
   };
 
   if (!user) {
@@ -63,7 +76,7 @@ const Profile = ({ videos, onEdit, onDelete, loggedInUser }) => {
         <div className="video-list">
           {userVideos.map((video) => (
             <VideoItem
-              key={video.id}
+              key={video._id}
               video={video}
               onVideoSelect={handleVideoSelect}
               onEdit={onEdit}

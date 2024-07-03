@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './VideoItem.css';
+import axios from 'axios';
 
 const VideoItem = ({ video, onVideoSelect, onEdit, onDelete, loggedInUser }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -12,15 +13,30 @@ const VideoItem = ({ video, onVideoSelect, onEdit, onDelete, loggedInUser }) => 
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
-  const handleEdit = (e) => {
+  const handleEdit = async (e) => {
     e.stopPropagation();
-    setIsEditing(true);
+    if (isEditing) {
+      try {
+        const response = await axios.patch(`http://localhost:5000/api/users/${video.uploader.id}/videos/${video._id}`, {
+          title: editedTitle,
+          thumbnail: editedThumbnail,
+        });
+        onEdit(response.data);
+      } catch (error) {
+        console.error('Error updating video:', error);
+      }
+    }
+    setIsEditing(!isEditing);
   };
 
-  const handleSave = (e) => {
+  const handleDelete = async (e) => {
     e.stopPropagation();
-    onEdit({ ...video, title: editedTitle, thumbnail: editedThumbnail });
-    setIsEditing(false);
+    try {
+      await axios.delete(`http://localhost:5000/api/users/${video.uploader.id}/videos/${video._id}`);
+      onDelete(video._id);
+    } catch (error) {
+      console.error('Error deleting video:', error);
+    }
   };
 
   const handleThumbnailChange = (e) => {
@@ -59,7 +75,7 @@ const VideoItem = ({ video, onVideoSelect, onEdit, onDelete, loggedInUser }) => 
               {loggedInUser && video.uploader.username === loggedInUser.username && (
                 <div className="video-actions">
                   <button onClick={handleEdit}>Edit</button>
-                  <button onClick={(e) => { e.stopPropagation(); onDelete(video.id); }}>Delete</button>
+                  <button onClick={handleDelete}>Delete</button>
                 </div>
               )}
             </>
@@ -74,7 +90,7 @@ const VideoItem = ({ video, onVideoSelect, onEdit, onDelete, loggedInUser }) => 
               <input type="file" accept="image/*" onChange={handleThumbnailChange} />
               {editedThumbnail && <img src={editedThumbnail} alt="Edited Thumbnail" className="edited-thumbnail" />}
               <div className="video-actions">
-                <button onClick={handleSave}>Save</button>
+                <button onClick={handleEdit}>Save</button>
                 <button onClick={() => setIsEditing(false)}>Cancel</button>
               </div>
             </>

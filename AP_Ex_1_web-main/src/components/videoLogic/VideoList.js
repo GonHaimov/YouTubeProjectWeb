@@ -4,7 +4,7 @@ import VideoItem from './VideoItem';
 const VideoList = ({ videos, onVideoSelect, onEdit, onDelete, loggedInUser }) => {
   const renderedVideos = videos.map((video) => {
     return <VideoItem
-      key={video.id}
+      key={video._id}
       video={video}
       onVideoSelect={() => onVideoSelect(video)}
       onEdit={onEdit}

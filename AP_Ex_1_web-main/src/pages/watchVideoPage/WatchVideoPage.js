@@ -1,50 +1,58 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import VideoPlayer from '../../components/videoLogic/VideoPlayer';
-import RelatedVideoList from '../../components/relatedVideos/RelatedVideoList';
-import CommentSection from '../../components/comments/CommentSection';
-import HomeHeader from '../../components/homeHeader/HomeHeader';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import VideoPlayer from '../../components/videoLogic/VideoPlayer'; // Ensure the correct path
+import RelatedVideoList from '../../components/relatedVideos/RelatedVideoList'; // Ensure the correct path
+import CommentSection from '../../components/comments/CommentSection'; // Ensure the correct path
+import HomeHeader from '../../components/homeHeader/HomeHeader'; // Ensure the correct path
+import axios from 'axios';
 import './WatchVideoPage.css';
 
 const WatchVideoPage = ({ videos, onAddComment, onEditComment, onDeleteComment, onLike }) => {
-  const { id } = useParams();
+  const { id } = useParams(); // selectedVideo's id
+  const location = useLocation();
+  const { video } = location.state || {}; // Access the passed video object
   const navigate = useNavigate();
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
-    const video = videos.find((video) => video.id === id);
-    setSelectedVideo(video);
+    const fetchVideo = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/users/${video.uploader.id}/videos/${id}`);
+        setSelectedVideo(response.data);
+        setComments(response.data.comments || []);
+      } catch (error) {
+        console.error('Error fetching video:', error);
+      }
+    };
 
-    if (video) {
-      setComments(video.comments || []);
-    } else {
-      setComments([]);
-    }
-  }, [id, videos]);
+    fetchVideo();
+  }, [id]);
 
   const handleAddComment = (newComment) => {
     const updatedComments = [...comments, newComment];
     setComments(updatedComments);
-    onAddComment(selectedVideo.id, updatedComments);
+    onAddComment(selectedVideo._id, updatedComments);
   };
 
   const handleEditComment = (commentId, newText) => {
     const updatedComments = comments.map((comment) =>
-      comment.id === commentId ? { ...comment, text: newText } : comment
+      comment._id === commentId ? { ...comment, text: newText } : comment
     );
     setComments(updatedComments);
-    onEditComment(selectedVideo.id, commentId, newText);
+    onEditComment(selectedVideo._id, commentId, newText);
   };
 
   const handleDeleteComment = (commentId) => {
-    const updatedComments = comments.filter((comment) => comment.id !== commentId);
+    const updatedComments = comments.filter((comment) => comment._id !== commentId);
     setComments(updatedComments);
-    onDeleteComment(selectedVideo.id, commentId);
+    onDeleteComment(selectedVideo._id, commentId);
   };
 
   const handleVideoSelect = (video) => {
-    navigate(`/watch/${video.id}`);
+    //navigate(`/watch/${video._id}`);
+    navigate(`/watch/${video._id}`, { state: { video: video } });
+
   };
 
   if (!selectedVideo) return <div>Loading...</div>;
@@ -54,9 +62,9 @@ const WatchVideoPage = ({ videos, onAddComment, onEditComment, onDeleteComment, 
       <HomeHeader onSearch={() => navigate('/')} />
       <div className="main-content-container">
         <div className="video-player-container">
-          <VideoPlayer video={selectedVideo} onLike={() => onLike(selectedVideo.id)} />
+          <VideoPlayer video={selectedVideo} onLike={() => onLike(selectedVideo._id)} />
           <CommentSection
-            key={selectedVideo.id}
+            key={selectedVideo._id}
             comments={comments}
             onAddComment={handleAddComment}
             onEditComment={handleEditComment}

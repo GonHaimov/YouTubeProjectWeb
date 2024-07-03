@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../../components/homeHeader/HomeHeader';
+import axios from 'axios';
+import Header from '../../components/homeHeader/HomeHeader'; // Ensure the correct path
 import './UploadScreen.css';
 
-const UploadScreen = ({ onUpload }) => {
+const UploadScreen = () => {
   const [videoFile, setVideoFile] = useState(null);
   const [title, setTitle] = useState('');
   const [thumbnail, setThumbnail] = useState(null);
@@ -11,33 +12,32 @@ const UploadScreen = ({ onUpload }) => {
   const navigate = useNavigate();
   const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (videoFile && title && thumbnail && duration) {
-      const videoURL = URL.createObjectURL(videoFile);
-      const thumbnailURL = URL.createObjectURL(thumbnail);
-
-      // Log the video and thumbnail URLs to verify them
-      console.log("Video URL: ", videoURL);
-      console.log("Thumbnail URL: ", thumbnailURL);
-
-      const newVideo = {
-        id: Date.now().toString(),
-        title,
-        url: videoURL,
-        thumbnail: thumbnailURL,
-        views: '0 views',
-        duration: parseInt(duration, 10),
-        uploadDate: 'Just now',
-        comments: [],
-        uploader: {
-          id: loggedInUser.id,
-          username: loggedInUser.username,
-          profilePicture: loggedInUser.profilePicture, 
-        },
-      };
-
-      onUpload(newVideo);
-      navigate('/');
+      const formData = new FormData();
+      formData.append('videoFile', videoFile);
+      formData.append('title', title);
+      formData.append('thumbnail', thumbnail);
+      formData.append('duration', duration);
+      formData.append('uploader', JSON.stringify({
+        id: loggedInUser._id,
+        username: loggedInUser.username,
+        profilePicture: loggedInUser.profilePicture,
+      }));
+  
+      try {
+        const token = sessionStorage.getItem('token'); // Ensure token is stored in session storage
+        const response = await axios.post(`http://localhost:5000/api/users/${loggedInUser._id}/videos`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}` // Add the token to the headers
+          },
+        });
+        console.log('Uploaded video:', response.data);
+        navigate('/');
+      } catch (error) {
+        console.error('Error uploading video:', error);
+      }
     }
   };
 
