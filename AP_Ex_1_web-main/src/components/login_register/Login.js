@@ -24,8 +24,10 @@ function Login() {
       console.log('Response Data:', data); // Log the response data to check its contents
 
       if (response.ok) {
-        sessionStorage.setItem('loggedInUser', JSON.stringify(data.user)); // Store the logged-in user in sessionStorage
-        sessionStorage.setItem('authToken', data.token); // Store the authentication token
+        localStorage.setItem('loggedInUser', JSON.stringify(data.user)); 
+        localStorage.setItem('authToken', data.token); 
+        sessionStorage.setItem('loggedInUser', JSON.stringify(data.user)); 
+        sessionStorage.setItem('authToken', data.token); 
         alert('Login successful!');
         navigate('/'); // Navigate to the home page
       } else {

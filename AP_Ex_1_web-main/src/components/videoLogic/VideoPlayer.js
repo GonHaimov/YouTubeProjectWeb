@@ -17,7 +17,7 @@ const VideoPlayer = ({ video, onLike }) => {
   }
 
   const { url, title, uploader } = video;
-  const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
 
   const handleLikeClick = () => {
     onLike(video.id);

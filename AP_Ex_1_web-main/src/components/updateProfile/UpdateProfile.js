@@ -11,7 +11,7 @@ const UpdateProfile = () => {
   const navigate = useNavigate();
   
   useEffect(() => {
-    const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
     if (loggedInUser) {
       setUsername(loggedInUser.username);
       setEmail(loggedInUser.email);
@@ -20,8 +20,8 @@ const UpdateProfile = () => {
   }, []);
 
   const handleUpdate = async () => {
-    const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
-    const token = sessionStorage.getItem('authToken');
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+    const token = localStorage.getItem('authToken');
 
     const updatedData = {
       username,
@@ -46,7 +46,7 @@ const UpdateProfile = () => {
 
           if (response.ok) {
             const updatedUser = await response.json();
-            sessionStorage.setItem('loggedInUser', JSON.stringify(updatedUser));
+            localStorage.setItem('loggedInUser', JSON.stringify(updatedUser));
             setMessage('Profile updated successfully!');
             navigate('/');
           } else {
@@ -71,7 +71,7 @@ const UpdateProfile = () => {
 
         if (response.ok) {
           const updatedUser = await response.json();
-          sessionStorage.setItem('loggedInUser', JSON.stringify(updatedUser));
+          localStorage.setItem('loggedInUser', JSON.stringify(updatedUser));
           setMessage('Profile updated successfully!');
           navigate('/');
         } else {

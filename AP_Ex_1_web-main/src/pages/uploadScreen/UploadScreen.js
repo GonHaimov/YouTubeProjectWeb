@@ -10,34 +10,56 @@ const UploadScreen = () => {
   const [thumbnail, setThumbnail] = useState(null);
   const [duration, setDuration] = useState('');
   const navigate = useNavigate();
-  const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
 
   const handleUpload = async () => {
     if (videoFile && title && thumbnail && duration) {
-      const formData = new FormData();
-      formData.append('videoFile', videoFile);
-      formData.append('title', title);
-      formData.append('thumbnail', thumbnail);
-      formData.append('duration', duration);
-      formData.append('uploader', JSON.stringify({
-        id: loggedInUser._id,
-        username: loggedInUser.username,
-        profilePicture: loggedInUser.profilePicture,
-      }));
-  
-      try {
-        const token = sessionStorage.getItem('token'); // Ensure token is stored in session storage
-        const response = await axios.post(`http://localhost:5000/api/users/${loggedInUser._id}/videos`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${token}` // Add the token to the headers
-          },
-        });
-        console.log('Uploaded video:', response.data);
-        navigate('/');
-      } catch (error) {
-        console.error('Error uploading video:', error);
+      const fileReader = new FileReader();
+      fileReader.onloadend = async () => {
+        const uploadData = {
+          videoFile, // This should be updated with the actual file path or handling strategy
+          title,
+          thumbnail: fileReader.result, // Store the base64 encoded thumbnail
+          duration,
+          uploader: {
+            id: loggedInUser._id.toString(), // Ensure id is a string
+            username: loggedInUser.username.toString(), // Ensure username is a string
+            profilePicture: loggedInUser.profilePicture.toString() // Ensure profilePicture is a string
+          }
+        };
+
+        try {
+          const token = localStorage.getItem('authToken'); 
+          const response = await axios.post(`http://localhost:5000/api/users/${loggedInUser._id}/videos`, uploadData, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json' // Ensure the correct content type
+            }
+          });
+          console.log('Video uploaded successfully:', response.data);
+          console.log('Uploaded video details:', uploadData);
+          navigate('/'); // Navigate to home page after successful upload
+        } catch (error) {
+          console.error('Error uploading video:', error);
+        }
+      };
+
+      if (thumbnail) {
+        fileReader.readAsDataURL(thumbnail);
+      } else {
+        console.error('Thumbnail is required.');
       }
+    } else {
+      console.error('All fields are required for video upload.');
+    }
+  };
+
+  const handleThumbnailUpload = (e) => {
+    const file = e.target.files[0];
+    if (file && (file.type === "image/jpeg" || file.type === "image/png")) {
+      setThumbnail(file);
+    } else {
+      alert("Please upload a valid image file (JPEG or PNG)");
     }
   };
 
@@ -52,7 +74,7 @@ const UploadScreen = () => {
           <label htmlFor="video-title">Video Title</label>
           <input id="video-title" type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
           <label htmlFor="thumbnail-upload">Select Thumbnail Image</label>
-          <input id="thumbnail-upload" type="file" accept="image/*" onChange={(e) => setThumbnail(e.target.files[0])} />
+          <input id="thumbnail-upload" type="file" accept="image/jpeg,image/png" onChange={handleThumbnailUpload} />
           <label htmlFor="video-duration">Video Duration (in seconds)</label>
           <input id="video-duration" type="number" placeholder="Duration (in seconds)" value={duration} onChange={(e) => setDuration(e.target.value)} />
           <button type="button" onClick={handleUpload}>Upload</button>

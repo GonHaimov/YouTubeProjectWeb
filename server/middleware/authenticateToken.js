@@ -8,7 +8,7 @@ const authenticateToken = (req, res, next) => {
   if (!token) {
     return res.status(401).json({ message: 'Access token missing' });
   }
-
+console.log(token);
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
       console.log('Token verification error:', err); // Log the error

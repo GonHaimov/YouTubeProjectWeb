@@ -11,9 +11,8 @@ const Profile = ({ onEdit, onDelete, loggedInUser }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
     if (loggedInUser) {
-      console.log('Profile.js - Logged in user on load:', loggedInUser);
       setUser(loggedInUser);
     }
   }, []);
@@ -24,7 +23,7 @@ const Profile = ({ onEdit, onDelete, loggedInUser }) => {
         try {
           const response = await axios.get(`http://localhost:5000/api/users/${user._id}/videos`, {
             headers: {
-              Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
           });
           console.log('Profile.js - Fetched user videos:', response.data);

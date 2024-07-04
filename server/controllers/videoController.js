@@ -10,21 +10,34 @@ const getVideosController = async (req, res) => {
 };
 
 const createVideoController = async (req, res) => {
-  const { title, url, thumbnail, views, duration, uploadDate, uploader } = req.body;
+  const { title, videoFile, thumbnail, duration, uploader } = req.body;
+  // Check if all required fields are present
+ // Check if all required fields are present
+ if (!videoFile || !title || !thumbnail || !duration || !uploader || !uploader.id || !uploader.username || !uploader.profilePicture) {
+  if (!videoFile) console.log('videoFile is undefined');
+  if (!title) console.log('title is undefined');
+  if (!thumbnail) console.log('thumbnail is undefined');
+  if (!duration) console.log('duration is undefined');
+  if (!uploader) console.log('uploader is undefined');
+  if (!uploader.id) console.log('uploader.id is undefined');
+  if (!uploader.username) console.log('uploader.username is undefined');
+  if (!uploader.profilePicture) console.log('uploader.profilePicture is undefined');
+  return res.status(400).json({ message: 'All required fields must be provided.' });
+}
+const uploadDate = new Date(); 
   try {
     const savedVideo = await createVideo({
+      videoFile,
       title,
-      url,
       thumbnail,
-      views,
       duration,
       uploadDate,
       comments: [],
       uploader
     });
     res.status(201).json(savedVideo);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 

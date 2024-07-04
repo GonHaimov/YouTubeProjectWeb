@@ -4,27 +4,29 @@ const getVideos = async () => {
   return await Video.find().sort({ views: -1 }).limit(20);
 };
 
-const createVideo = async ({ title, url, thumbnail, views, duration, uploadDate, comments = [], uploader }) => {
-
-
+const createVideo = async ({ title, videoFile, thumbnail, duration, uploadDate, uploader }) => {
+  try {
 
   const newVideo = new Video({
     title,
-    url,
+    videoFile,
     thumbnail,
-    views,
     duration,
     uploadDate,
-    comments,
-    uploader: {
-      id: new mongoose.Types.ObjectId(uploader.id),
-      username: uploader.username,
-      profilePicture: uploader.profilePicture,
-    },
+    comments: [], 
+    uploader
   });
 
-  return await newVideo.save();
-};
+  
+  console.log(duration);
+  await newVideo.save();
+  return newVideo;
+  
+}
+catch(err) {
+  return { message: err.message };
+}
+}
 
 const getUserVideos = async (userId) => {
   return await Video.find({ 'uploader.id': userId });

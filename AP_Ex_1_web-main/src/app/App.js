@@ -94,7 +94,7 @@ const App = () => {
   };
 
   const handleLike = async (videoId) => {
-    const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
     if (!loggedInUser) {
       alert('You must be logged in to like a video.');
       return;
@@ -142,7 +142,7 @@ const App = () => {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/profile" element={<ProtectedRoute component={Profile} videos={videos} onEdit={handleEdit} onDelete={handleDelete} loggedInUser={JSON.parse(sessionStorage.getItem('loggedInUser'))} />} />
+          <Route path="/profile" element={<ProtectedRoute component={Profile} videos={videos} onEdit={handleEdit} onDelete={handleDelete} loggedInUser={JSON.parse(localStorage.getItem('loggedInUser'))} />} />
           <Route path="/update-profile" element={<ProtectedRoute component={UpdateProfile} />} />
           <Route path="/delete-profile" element={<ProtectedRoute component={DeleteProfile} />} />
         </Routes>
@@ -153,7 +153,7 @@ const App = () => {
 
 const ProtectedRoute = ({ component: Component, ...props }) => {
   const navigate = useNavigate();
-  const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
 
   useEffect(() => {
     if (!loggedInUser) {

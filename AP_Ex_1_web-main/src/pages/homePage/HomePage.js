@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 const HomePage = ({ onSearch, onEdit, onDelete }) => {
   const [filteredVideos, setFilteredVideos] = useState([]);
   const [allVideos, setAllVideos] = useState([]);
-  const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
   const navigate = useNavigate();
 
   useEffect(() => {
