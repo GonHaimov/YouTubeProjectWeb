@@ -1,4 +1,6 @@
+// server/controllers/userController.js
 const { registerUser, loginUser, getUserById, updateUser, deleteUser } = require('../services/userService');
+const Video = require('../models/Video');
 
 const register = async (req, res) => {
   const { username, password, email, profilePicture } = req.body;
@@ -58,6 +60,7 @@ const deleteUserController = async (req, res) => {
     await deleteUser(id); // Delete user
     res.status(200).json({ message: 'User and associated videos deleted successfully' });
   } catch (err) {
+    console.error('Error deleting user:', err);
     res.status(500).json({ message: err.message });
   }
 };

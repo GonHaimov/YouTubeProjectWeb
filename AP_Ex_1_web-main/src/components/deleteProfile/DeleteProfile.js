@@ -1,3 +1,4 @@
+// client/src/pages/DeleteProfile/DeleteProfile.js
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './DeleteProfile.css';
@@ -7,8 +8,8 @@ const DeleteProfile = () => {
   const navigate = useNavigate();
 
   const handleDelete = async () => {
-    const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
-    const token = sessionStorage.getItem('authToken');
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+    const token = localStorage.getItem('authToken');
 
     try {
       const response = await fetch(`http://localhost:5000/api/users/${loggedInUser._id}`, {
@@ -19,11 +20,13 @@ const DeleteProfile = () => {
       });
 
       if (response.ok) {
-        sessionStorage.removeItem('loggedInUser');
-        sessionStorage.removeItem('authToken');
+        localStorage.removeItem('loggedInUser');
+        localStorage.removeItem('authToken');
         alert('User deleted successfully');
         navigate('/');
       } else {
+        const errorData = await response.json();
+        console.error('Failed to delete user:', errorData.message);
         alert('Failed to delete user');
       }
     } catch (error) {

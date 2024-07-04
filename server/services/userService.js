@@ -50,7 +50,16 @@ const updateUser = async (userId, updateData) => {
 };
 
 const deleteUser = async (userId) => {
-  return await User.findByIdAndDelete(userId);
+  try {
+    const deletedUser = await User.findByIdAndDelete(userId);
+    if (!deletedUser) {
+      throw new Error('User not found');
+    }
+    return deletedUser;
+  } catch (err) {
+    console.error('Error deleting user:', err);
+    throw err;
+  }
 };
 
 module.exports = {

@@ -12,7 +12,7 @@ const HomeHeader = ({ onSearch, showSearch = true }) => {
   const [recentSearches, setRecentSearches] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    const savedMode = sessionStorage.getItem('darkMode');
+  const savedMode = localStorage.getItem('darkMode');
     return savedMode === 'true' || false;
   });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -22,7 +22,7 @@ const HomeHeader = ({ onSearch, showSearch = true }) => {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
+    const user = JSON.parse(localStorage.getItem('loggedInUser'));
     if (user) {
       setIsLoggedIn(true);
       setUserImage(user.profilePicture);
@@ -43,7 +43,7 @@ const HomeHeader = ({ onSearch, showSearch = true }) => {
       onSearch(query);
       const newRecentSearches = [query, ...recentSearches.filter((search) => search !== query)].slice(0, 10);
       setRecentSearches(newRecentSearches);
-      sessionStorage.setItem('recentSearches', JSON.stringify(newRecentSearches));
+      localStorage.setItem('recentSearches', JSON.stringify(newRecentSearches));
       setQuery('');
     }
     setShowDropdown(false);
@@ -68,11 +68,11 @@ const HomeHeader = ({ onSearch, showSearch = true }) => {
 
   const handleToggleDarkMode = () => {
     setIsDarkMode(prevMode => !prevMode);
-    sessionStorage.setItem('darkMode', !isDarkMode);
+    localStorage.setItem('darkMode', !isDarkMode);
   };
 
   const handleSignIn = () => {
-    sessionStorage.removeItem('darkMode'); // Remove dark mode state on login
+    localStorage.removeItem('darkMode'); // Remove dark mode state on login
     setIsDarkMode(false); // Ensure light mode on login
     document.body.classList.remove('dark-mode'); // Remove dark mode class from body
     navigate('/login');
@@ -81,8 +81,8 @@ const HomeHeader = ({ onSearch, showSearch = true }) => {
   const handleSignOut = () => {
     setIsLoggedIn(false);
     setUserImage(null);
-    sessionStorage.removeItem('loggedInUser');
-    sessionStorage.removeItem('darkMode'); // Remove dark mode state on logout
+    localStorage.removeItem('loggedInUser');
+    localStorage.removeItem('darkMode'); // Remove dark mode state on logout
     setIsDarkMode(false); // Ensure light mode on logout
     document.body.classList.remove('dark-mode'); // Remove dark mode class from body
     navigate('/login');

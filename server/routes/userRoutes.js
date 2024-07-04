@@ -1,3 +1,4 @@
+// server/routes/userRoutes.js
 const express = require('express');
 const { register, login, getUserDetailsById, updateUserController, deleteUserController } = require('../controllers/userController');
 const authenticateToken = require('../middleware/authenticateToken');
