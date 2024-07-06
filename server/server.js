@@ -1,5 +1,4 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const videoRoutes = require('./routes/videoRoutes');
@@ -10,9 +9,14 @@ dotenv.config();
 connectDB();
 
 const app = express();
-app.use(bodyParser.json({ limit: '10mb' }));
 app.use(cors());
-app.use(express.json());
+
+// Middleware to parse JSON bodies and set JSON limit
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true }));
+
+// Serve static files from the uploads folder
+app.use('/uploads', express.static('uploads'));
 
 app.use('/api', userRoutes);
 app.use('/api', videoRoutes);

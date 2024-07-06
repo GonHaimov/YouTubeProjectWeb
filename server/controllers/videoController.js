@@ -1,4 +1,6 @@
 const { getVideos, createVideo, getUserVideos, getVideoById, updateVideo, deleteVideo } = require('../services/videoService');
+const upload = require('../utils/multerConfig.js')
+const Video = require('../models/Video.js')
 
 const getVideosController = async (req, res) => {
   try {
@@ -9,43 +11,54 @@ const getVideosController = async (req, res) => {
   }
 };
 
-const createVideoController = async (req, res) => {
-  const { title, videoFile, thumbnail, duration, uploader } = req.body;
-  // Check if all required fields are present
- // Check if all required fields are present
- if (!videoFile || !title || !thumbnail || !duration || !uploader || !uploader.id || !uploader.username || !uploader.profilePicture) {
-  if (!videoFile) console.log('videoFile is undefined');
-  if (!title) console.log('title is undefined');
-  if (!thumbnail) console.log('thumbnail is undefined');
-  if (!duration) console.log('duration is undefined');
-  if (!uploader) console.log('uploader is undefined');
-  if (!uploader.id) console.log('uploader.id is undefined');
-  if (!uploader.username) console.log('uploader.username is undefined');
-  if (!uploader.profilePicture) console.log('uploader.profilePicture is undefined');
-  return res.status(400).json({ message: 'All required fields must be provided.' });
-}
-const uploadDate = new Date(); 
-  try {
-    const savedVideo = await createVideo({
-      videoFile,
-      title,
-      thumbnail,
-      duration,
-      uploadDate,
-      comments: [],
-      uploader
-    });
-    res.status(201).json(savedVideo);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+const createVideoController = (req, res) => {
+  upload(req, res, async (err) => {
+    if (err) {
+      return res.status(400).send(err);
+    }
+
+    const { title, duration, uploader } = req.body;
+    const videoFile = req.files['videoFile'][0];
+    const thumbnail = req.files['thumbnail'][0];
+
+    let parsedUploader;
+    try {
+      parsedUploader = JSON.parse(uploader);
+    } catch (e) {
+      return res.status(400).json({ message: 'Invalid uploader JSON.' });
+    }
+
+    const uploadDate = new Date();
+
+    try {
+      const newVideo = new Video({
+        title,
+        videoFile: videoFile.path,
+        thumbnail: thumbnail.path,
+        duration,
+        uploadDate,
+        comments: [],
+        uploader: parsedUploader // make sure to use parsedUploader
+      });
+
+      await newVideo.save();
+      res.status(201).json(newVideo);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
 };
 
-const getUserVideosController = async (req, res) => {
+module.exports = createVideoController;
+
+
+const getUserVideosController = async (req, res) => { 
   const { id } = req.params;
 
   try {
     const videos = await getUserVideos(id);
+
+
     res.json(videos);
   } catch (err) {
     res.status(500).json({ message: err.message });

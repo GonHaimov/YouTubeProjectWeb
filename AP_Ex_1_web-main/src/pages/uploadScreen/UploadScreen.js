@@ -14,40 +14,29 @@ const UploadScreen = () => {
 
   const handleUpload = async () => {
     if (videoFile && title && thumbnail && duration) {
-      const fileReader = new FileReader();
-      fileReader.onloadend = async () => {
-        const uploadData = {
-          videoFile, // This should be updated with the actual file path or handling strategy
-          title,
-          thumbnail: fileReader.result, // Store the base64 encoded thumbnail
-          duration,
-          uploader: {
-            id: loggedInUser._id.toString(), // Ensure id is a string
-            username: loggedInUser.username.toString(), // Ensure username is a string
-            profilePicture: loggedInUser.profilePicture.toString() // Ensure profilePicture is a string
+      const formData = new FormData();
+      formData.append('videoFile', videoFile);
+      formData.append('title', title);
+      formData.append('thumbnail', thumbnail);
+      formData.append('duration', duration);
+      formData.append('uploader', JSON.stringify({
+        id: loggedInUser._id.toString(),
+        username: loggedInUser.username.toString(),
+        profilePicture: loggedInUser.profilePicture.toString()
+      }));
+  
+      try {
+        const token = localStorage.getItem('authToken'); 
+        const response = await axios.post(`http://localhost:5000/api/users/${loggedInUser._id}/videos`, formData, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
           }
-        };
-
-        try {
-          const token = localStorage.getItem('authToken'); 
-          const response = await axios.post(`http://localhost:5000/api/users/${loggedInUser._id}/videos`, uploadData, {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json' // Ensure the correct content type
-            }
-          });
-          console.log('Video uploaded successfully:', response.data);
-          console.log('Uploaded video details:', uploadData);
-          navigate('/'); // Navigate to home page after successful upload
-        } catch (error) {
-          console.error('Error uploading video:', error);
-        }
-      };
-
-      if (thumbnail) {
-        fileReader.readAsDataURL(thumbnail);
-      } else {
-        console.error('Thumbnail is required.');
+        });
+        console.log('Video uploaded successfully:', response.data);
+        navigate('/');
+      } catch (error) {
+        console.error('Error uploading video:', error);
       }
     } else {
       console.error('All fields are required for video upload.');

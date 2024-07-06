@@ -17,9 +17,9 @@ const createVideo = async ({ title, videoFile, thumbnail, duration, uploadDate, 
     uploader
   });
 
-  
-  console.log(duration);
+
   await newVideo.save();
+
   return newVideo;
   
 }
