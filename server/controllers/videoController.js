@@ -1,6 +1,6 @@
 const { getVideos, createVideo, getUserVideos, getVideoById, updateVideo, deleteVideo } = require('../services/videoService');
-const upload = require('../utils/multerConfig.js')
-const Video = require('../models/Video.js')
+const upload = require('../utils/multerConfig.js');
+const Video = require('../models/Video.js');
 
 const getVideosController = async (req, res) => {
   try {
@@ -33,12 +33,12 @@ const createVideoController = (req, res) => {
     try {
       const newVideo = new Video({
         title,
-        videoFile: videoFile.path,
-        thumbnail: thumbnail.path,
+        videoFile: `/uploads/videos/${videoFile.filename}`,
+        thumbnail: `/uploads/thumbnails/${thumbnail.filename}`,
         duration,
         uploadDate,
         comments: [],
-        uploader: parsedUploader // make sure to use parsedUploader
+        uploader: parsedUploader
       });
 
       await newVideo.save();
@@ -49,16 +49,11 @@ const createVideoController = (req, res) => {
   });
 };
 
-module.exports = createVideoController;
-
-
 const getUserVideosController = async (req, res) => { 
   const { id } = req.params;
 
   try {
     const videos = await getUserVideos(id);
-
-
     res.json(videos);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -104,7 +99,7 @@ const deleteVideoController = async (req, res) => {
     }
     res.json({ message: 'Video deleted successfully' });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status (500).json({ message: err.message });
   }
 };
 

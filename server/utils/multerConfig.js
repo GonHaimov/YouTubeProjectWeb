@@ -18,7 +18,10 @@ const storage = multer.diskStorage({
 // Initialize upload
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 1000000000 }, // 1GB limit
+  limits: { 
+    fileSize: 1000000000, // 1GB limit for individual files
+    fieldSize: 1024 * 1024 * 50 // Increase field size limit to 50MB for fields
+  },
   fileFilter: (req, file, cb) => {
     checkFileType(file, cb);
   }
@@ -29,8 +32,11 @@ const upload = multer({
 
 // Check file type
 function checkFileType(file, cb) {
+  // Allowed file types
   const filetypes = /mp4|avi|mkv|jpeg|jpg|png/;
+  // Check extension
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  // Check mime type
   const mimetype = filetypes.test(file.mimetype);
 
   if (mimetype && extname) {

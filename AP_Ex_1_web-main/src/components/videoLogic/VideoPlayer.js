@@ -10,23 +10,26 @@ const VideoPlayer = ({ video, onLike }) => {
         console.error('Error attempting to play:', error);
       });
     }
-  }, [video.url]);
+  }, [video?.videoFile]);
 
   if (!video) {
     return <div>Loading...</div>;
   }
 
-  const { url, title, uploader } = video;
+  const { videoFile, title, uploader } = video;
   const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
 
   const handleLikeClick = () => {
-    onLike(video.id);
+    onLike(video._id);
   };
+
+  // Construct the video URL only if it exists
+  const videoUrl = videoFile?.startsWith('/uploads/') ? `http://localhost:5000${videoFile}` : videoFile;
 
   return (
     <div className='video'>
-      <video ref={videoRef} width="1038" height="534" controls key={video.id}>
-        <source src={url} type="video/mp4" />
+      <video ref={videoRef} width="1038" height="534" controls key={video._id}>
+        <source src={videoUrl} type="video/mp4" />
       </video>
       <div className='video-accessories'>
         <div className="video-title">

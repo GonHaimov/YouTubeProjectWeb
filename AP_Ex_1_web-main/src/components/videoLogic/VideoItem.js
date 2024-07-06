@@ -58,7 +58,7 @@ const VideoItem = ({ video, onVideoSelect, onEdit, onDelete, loggedInUser }) => 
     <div className="video-item">
       <div className="card">
         <div className="video-image-container" onClick={handleThumbnailClick}>
-          <img src={video.thumbnail} className="card-img-top" alt={video.title} />
+          <img src={video.thumbnail.startsWith('/uploads/') ? `http://localhost:5000${video.thumbnail}` : video.thumbnail} className="card-img-top" alt={video.title} />
           <span className="video-duration">{formatDuration(video.duration)}</span>
         </div>
         <div className="card-body">
