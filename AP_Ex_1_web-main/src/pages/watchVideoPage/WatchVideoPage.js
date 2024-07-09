@@ -16,9 +16,11 @@ const WatchVideoPage = ({ videos, onAddComment, onEditComment, onDeleteComment, 
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
+    console.log('Fetching video with id:', id);
     const fetchVideo = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/api/users/${video.uploader.id}/videos/${id}`);
+        console.log('Video fetched:', response.data);
         setSelectedVideo(response.data);
         setComments(response.data.comments || []);
       } catch (error) {
@@ -27,7 +29,7 @@ const WatchVideoPage = ({ videos, onAddComment, onEditComment, onDeleteComment, 
     };
 
     fetchVideo();
-  }, [id]);
+  }, [id, video.uploader.id]);
 
   const handleAddComment = (newComment) => {
     const updatedComments = [...comments, newComment];
@@ -50,9 +52,8 @@ const WatchVideoPage = ({ videos, onAddComment, onEditComment, onDeleteComment, 
   };
 
   const handleVideoSelect = (video) => {
-    //navigate(`/watch/${video._id}`);
     navigate(`/watch/${video._id}`, { state: { video: video } });
-
+    setSelectedVideo(video);
   };
 
   if (!selectedVideo) return <div>Loading...</div>;

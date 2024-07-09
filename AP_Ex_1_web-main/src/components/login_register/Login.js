@@ -25,9 +25,8 @@ function Login() {
 
       if (response.ok) {
         localStorage.setItem('loggedInUser', JSON.stringify(data.user)); 
-        //localStorage.setItem('authToken', data.token); 
-        //sessionStorage.setItem('loggedInUser', JSON.stringify(data.user)); 
-        //sessionStorage.setItem('authToken', data.token); 
+        localStorage.setItem('authToken', data.token); 
+       
         alert('Login successful!');
         navigate('/'); // Navigate to the home page
       } else {
