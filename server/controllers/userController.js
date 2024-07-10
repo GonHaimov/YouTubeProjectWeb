@@ -1,6 +1,7 @@
 // server/controllers/userController.js
 const { registerUser, loginUser, getUserById, updateUser, deleteUser } = require('../services/userService');
 const Video = require('../models/Video');
+const User = require('../models/User');
 
 const register = async (req, res) => {
   const { username, password, email, profilePicture } = req.body;
@@ -30,7 +31,8 @@ const login = async (req, res) => {
 
 const getUserDetailsById = async (req, res) => {
   try {
-    const user = await getUserById(req.params.id).select('-password');
+  
+    const user = await User.findById(req.params.id).select('-password');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }

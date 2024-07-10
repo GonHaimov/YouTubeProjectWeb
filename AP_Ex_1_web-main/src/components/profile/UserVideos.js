@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import './UserVideos.css';
+import VideoItem from '../../components/videoLogic/VideoItem';
+import { ReactComponent as YouTubeLogo } from '../../assets/youtube-logo-light.svg';
 
 const UserVideos = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
   const [userVideos, setUserVideos] = useState([]);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     fetchUserData(id);
@@ -32,28 +36,34 @@ const UserVideos = () => {
     }
   };
 
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
   if (!user) {
     return <div>Loading...</div>;
   }
 
   return (
     <div className="user-videos-container">
-      <div className="user-info">
-        <img src={user.profilePicture} alt={user.username} className="user-profile-picture" />
+       <div className="header-logo" onClick={handleLogoClick}>
+        <YouTubeLogo />
+      </div>
+      <div className="profile-info">
+        <img src={user.profilePicture} alt="Profile" className="profile-picture" />
         <h2>{user.username}</h2>
+        <p>{user.email}</p>
+      
       </div>
       <div className="user-videos">
-        <h3>{user.username}'s Videos</h3>
-        <ul>
-          {userVideos.map(video => (
-            <li key={video._id}>
-              <h4>{video.title}</h4>
-              <p>{video.views} views</p>
-              <p>{video.duration} seconds</p>
-              <p>Uploaded on {new Date(video.uploadDate).toLocaleDateString()}</p>
-            </li>
+        <h3>Uploaded Videos</h3>
+        <div className="video-list">
+          {userVideos.map((video) => (
+            <VideoItem
+              key={video._id}
+              video={video}                          />
           ))}
-        </ul>
+        </div>
       </div>
     </div>
   );

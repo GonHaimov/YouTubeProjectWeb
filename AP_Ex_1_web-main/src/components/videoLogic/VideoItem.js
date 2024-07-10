@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './VideoItem.css';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+
 
 const VideoItem = ({ video, onVideoSelect, onEdit, onDelete, loggedInUser }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -17,10 +19,20 @@ const VideoItem = ({ video, onVideoSelect, onEdit, onDelete, loggedInUser }) => 
     e.stopPropagation();
     if (isEditing) {
       try {
+        const authToken = localStorage.getItem('authToken');
+    if (!authToken) {
+      console.error('Auth token not found in localStorage');
+      return;
+    }
         const response = await axios.patch(`http://localhost:5000/api/users/${video.uploader.id}/videos/${video._id}`, {
           title: editedTitle,
           thumbnail: editedThumbnail,
-        });
+          } , {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            }
+          });
+
         onEdit(response.data);
       } catch (error) {
         console.error('Error updating video:', error);
@@ -32,8 +44,18 @@ const VideoItem = ({ video, onVideoSelect, onEdit, onDelete, loggedInUser }) => 
   const handleDelete = async (e) => {
     e.stopPropagation();
     try {
-      await axios.delete(`http://localhost:5000/api/users/${video.uploader.id}/videos/${video._id}`);
-      onDelete(video._id);
+      const authToken = localStorage.getItem('authToken');
+      if (!authToken) {
+        console.error('Auth token not found in localStorage');
+        return;
+      }
+      await axios.delete(`http://localhost:5000/api/users/${video.uploader.id}/videos/${video._id}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
+      })
+      ;
+     onDelete(video._id);
     } catch (error) {
       console.error('Error deleting video:', error);
     }
@@ -69,7 +91,9 @@ const VideoItem = ({ video, onVideoSelect, onEdit, onDelete, loggedInUser }) => 
                 {video.views} • {video.uploadDate}
               </p>
               <div className="uploader-info">
-                <img src={video.uploader.profilePicture} alt={video.uploader.username} className="uploader-profile-picture" />
+              <Link to={`/userVideos/${video.uploader.id}`}>
+                  <img src={video.uploader.profilePicture} alt={video.uploader.username} className="uploader-profile-picture" />
+                </Link>
                 <span>{video.uploader.username}</span>
               </div>
               {loggedInUser && video.uploader.username === loggedInUser.username && (

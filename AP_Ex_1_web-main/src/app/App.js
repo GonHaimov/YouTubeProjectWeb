@@ -10,6 +10,7 @@ import Register from '../components/login_register/Register';
 import UpdateProfile from '../components/updateProfile/UpdateProfile';
 import DeleteProfile from '../components/deleteProfile/DeleteProfile';
 import Profile from '../components/profile/Profile';
+import UserVideos from '../components/profile/UserVideos';
 
 const App = () => {
   const [videos, setVideos] = useState([]);
@@ -28,21 +29,35 @@ const App = () => {
     }
   }
 
-  const handleEdit = async (editedVideo) => {
+  const handleGlobalEdit = async (editedVideo) => {
     try {
-      const response = await axios.patch(`http://localhost:5000/api/users/${editedVideo.uploader.id}/videos/${editedVideo.id}`, editedVideo);
-      setVideos(videos.map((video) => (video.id === editedVideo.id ? response.data : video)));
+      const authToken = localStorage.getItem('authToken');
+      if (!authToken) {
+        console.error('Auth token not found in localStorage');
+        return;
+      }
+
+      const response = await axios.patch(
+        `http://localhost:5000/api/users/${editedVideo.uploader.id}/videos/${editedVideo._id}`, 
+        editedVideo, 
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          }
+        }
+      );
+
+      setVideos(videos.map((video) => (video._id === editedVideo._id ? response.data : video)));
     } catch (error) {
       console.error('Error editing video:', error);
     }
   };
-
+  
   const handleDelete = async (id) => {
     try {
       const video = videos.find(v => v.id === id);
-      if (!video) return;
-      await axios.delete(`http://localhost:5000/api/users/${video.uploader.id}/videos/${id}`);
-      setVideos(videos.filter((video) => video.id !== id));
+
+      setVideos(videos.filter((video) => video._id !== id));
     } catch (error) {
       console.error('Error deleting video:', error);
     }
@@ -109,7 +124,7 @@ const App = () => {
               <HomePage
                 videos={videos}
                 onSearch={handleSearch}
-                onEdit={handleEdit}
+                onEdit={handleGlobalEdit} // Use handleGlobalEdit here
                 onDelete={handleDelete}
                 onLike={handleLike}
               />
@@ -133,9 +148,11 @@ const App = () => {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/profile" element={<ProtectedRoute component={Profile} videos={videos} onEdit={handleEdit} onDelete={handleDelete} loggedInUser={JSON.parse(localStorage.getItem('loggedInUser'))} />} />
+          <Route path="/profile" element={<ProtectedRoute component={Profile} videos={videos}                onEdit={handleGlobalEdit} // Use handleGlobalEdit here
+ onDelete={handleDelete} loggedInUser={JSON.parse(localStorage.getItem('loggedInUser'))} />} />
           <Route path="/update-profile" element={<ProtectedRoute component={UpdateProfile} />} />
           <Route path="/delete-profile" element={<ProtectedRoute component={DeleteProfile} />} />
+          <Route path="/userVideos/:id" element={<ProtectedRoute component={UserVideos} videos={videos}/>} />
         </Routes>
       </div>
     </Router>

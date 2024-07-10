@@ -23,7 +23,7 @@ const Profile = ({ onEdit, onDelete, loggedInUser }) => {
         try {
           const response = await axios.get(`http://localhost:5000/api/users/${user._id}/videos`, {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
+              Authorization: `Bearer ${localStorage.getItem('authToken')}`,
             },
           });
           console.log('Profile.js - Fetched user videos:', response.data);
