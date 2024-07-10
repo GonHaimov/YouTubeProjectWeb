@@ -124,7 +124,7 @@ const App = () => {
               <HomePage
                 videos={videos}
                 onSearch={handleSearch}
-                onEdit={handleGlobalEdit} // Use handleGlobalEdit here
+                onEdit={handleGlobalEdit}
                 onDelete={handleDelete}
                 onLike={handleLike}
               />
@@ -132,7 +132,7 @@ const App = () => {
           />
           <Route
             path="/upload"
-            element={<ProtectedRoute component={UploadScreen} onUpload={fetchVideos} />}
+            element={<ProtectedRoute component={UploadScreen} onUpload={fetchVideos} isProtected={true} />}
           />
           <Route
             path="/watch/:id"
@@ -148,28 +148,28 @@ const App = () => {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/profile" element={<ProtectedRoute component={Profile} videos={videos}                onEdit={handleGlobalEdit} // Use handleGlobalEdit here
- onDelete={handleDelete} loggedInUser={JSON.parse(localStorage.getItem('loggedInUser'))} />} />
-          <Route path="/update-profile" element={<ProtectedRoute component={UpdateProfile} />} />
-          <Route path="/delete-profile" element={<ProtectedRoute component={DeleteProfile} />} />
-          <Route path="/userVideos/:id" element={<ProtectedRoute component={UserVideos} videos={videos}/>} />
+          <Route path="/profile" element={<ProtectedRoute component={Profile} videos={videos} onEdit={handleGlobalEdit} onDelete={handleDelete} loggedInUser={JSON.parse(localStorage.getItem('loggedInUser'))} isProtected={true} />} />
+          <Route path="/update-profile" element={<ProtectedRoute component={UpdateProfile} isProtected={true} />} />
+          <Route path="/delete-profile" element={<ProtectedRoute component={DeleteProfile} isProtected={true} />} />
+          <Route path="/userVideos/:id" element={<ProtectedRoute component={UserVideos} videos={videos} isProtected={false} />} />
         </Routes>
       </div>
     </Router>
   );
 };
 
-const ProtectedRoute = ({ component: Component, ...props }) => {
+const ProtectedRoute = ({ component: Component, isProtected, ...props }) => {
   const navigate = useNavigate();
   const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
 
   useEffect(() => {
-    if (!loggedInUser) {
+    if (isProtected && !loggedInUser) {
       navigate('/login');
     }
-  }, [loggedInUser, navigate]);
+  }, [isProtected, loggedInUser, navigate]);
 
-  return loggedInUser ? <Component {...props} /> : null;
+  return !isProtected || loggedInUser ? <Component {...props} /> : null;
 };
+
 
 export default App;

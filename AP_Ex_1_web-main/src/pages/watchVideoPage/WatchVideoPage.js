@@ -54,6 +54,10 @@ const WatchVideoPage = ({ videos, onAddComment, onEditComment, onDeleteComment, 
     navigate(`/watch/${video._id}`, { state: { video: video } });
   };
 
+  const handleProfileClick = (uploaderId) => {
+    navigate(`/userVideos/${uploaderId}`);
+  };
+
   if (!video) return <div>Loading...</div>;
 
   return (
@@ -62,6 +66,17 @@ const WatchVideoPage = ({ videos, onAddComment, onEditComment, onDeleteComment, 
       <div className="main-content-container">
         <div className="video-player-container">
           <VideoPlayer video={video} onLike={() => onLike(video._id)} />
+          <div className="uploader-info">
+            <img
+              src={video.uploader.profilePicture}
+              alt={video.uploader.username}
+              className="uploader-profile-picture"
+              onClick={() => handleProfileClick(video.uploader.id)}
+            />
+            <span className="uploader-username" onClick={() => handleProfileClick(video.uploader.id)}>
+              {video.uploader.username}
+            </span>
+          </div>
           <CommentSection
             key={video._id}
             comments={comments}

@@ -26,7 +26,6 @@ const Profile = ({ onEdit, onDelete, loggedInUser }) => {
               Authorization: `Bearer ${localStorage.getItem('authToken')}`,
             },
           });
-          console.log('Profile.js - Fetched user videos:', response.data);
           setUserVideos(response.data);
         } catch (error) {
           console.error('Error fetching user videos:', error);
@@ -50,7 +49,7 @@ const Profile = ({ onEdit, onDelete, loggedInUser }) => {
   };
 
   const handleVideoSelect = (selectedVideo) => {
-    navigate(`/watch/${selectedVideo._id}`);
+    navigate(`/watch/${selectedVideo._id}`, { state: { video: selectedVideo } });
   };
 
   if (!user) {

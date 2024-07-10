@@ -10,7 +10,6 @@ const UserVideos = () => {
   const [userVideos, setUserVideos] = useState([]);
   const navigate = useNavigate();
 
-
   useEffect(() => {
     fetchUserData(id);
     fetchUserVideos(id);
@@ -40,20 +39,23 @@ const UserVideos = () => {
     navigate('/');
   };
 
+  const handleVideoSelect = (selectedVideo) => {
+    navigate(`/watch/${selectedVideo._id}`, { state: { video: selectedVideo } });
+  };
+
   if (!user) {
     return <div>Loading...</div>;
   }
 
   return (
     <div className="user-videos-container">
-       <div className="header-logo" onClick={handleLogoClick}>
+      <div className="header-logo" onClick={handleLogoClick}>
         <YouTubeLogo />
       </div>
       <div className="profile-info">
         <img src={user.profilePicture} alt="Profile" className="profile-picture" />
         <h2>{user.username}</h2>
         <p>{user.email}</p>
-      
       </div>
       <div className="user-videos">
         <h3>Uploaded Videos</h3>
@@ -61,7 +63,10 @@ const UserVideos = () => {
           {userVideos.map((video) => (
             <VideoItem
               key={video._id}
-              video={video}                          />
+              video={video}
+              onVideoSelect={handleVideoSelect}
+              loggedInUser={null} // No need for loggedInUser in this context
+            />
           ))}
         </div>
       </div>
