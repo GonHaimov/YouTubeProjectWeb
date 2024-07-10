@@ -1,39 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import VideoPlayer from '../../components/videoLogic/VideoPlayer'; // Ensure the correct path
-import RelatedVideoList from '../../components/relatedVideos/RelatedVideoList'; // Ensure the correct path
-import CommentSection from '../../components/comments/CommentSection'; // Ensure the correct path
-import HomeHeader from '../../components/homeHeader/HomeHeader'; // Ensure the correct path
+import VideoPlayer from '../../components/videoLogic/VideoPlayer';
+import RelatedVideoList from '../../components/relatedVideos/RelatedVideoList';
+import CommentSection from '../../components/comments/CommentSection';
+import HomeHeader from '../../components/homeHeader/HomeHeader';
 import axios from 'axios';
 import './WatchVideoPage.css';
 
 const WatchVideoPage = ({ videos, onAddComment, onEditComment, onDeleteComment, onLike }) => {
-  const { id } = useParams(); // selectedVideo's id
+  const { id } = useParams();
   const location = useLocation();
-  const { video } = location.state || {}; // Access the passed video object
+  const { video } = location.state || {};
   const navigate = useNavigate();
   const [comments, setComments] = useState([]);
+  const [currentVideo, setCurrentVideo] = useState(video);
 
   useEffect(() => {
-    console.log('Fetching selected video:', video);
-    console.log('Fetching video with id:', id);
+    const incrementViews = async () => {
+      try {
+        const response = await axios.patch(`http://localhost:5000/api/users/${video.uploader.id}/videos/${video._id}/views`);
+        setCurrentVideo(response.data); // Update local state with incremented views
+      } catch (error) {
+        console.error('Error incrementing views:', error);
+      }
+    };
+
     const fetchVideo = async () => {
       try {
-        //const response = await axios.get(`http://localhost:5000/api/users/${video.uploader.id}/videos/${id}`);
-        //console.log('Video fetched:', response.data);
         setComments(video.comments || []);
       } catch (error) {
         console.error('Error fetching video:', error);
       }
     };
 
+    incrementViews();
     fetchVideo();
-  }, []);
+  }, [video]);
 
   const handleAddComment = (newComment) => {
     const updatedComments = [...comments, newComment];
     setComments(updatedComments);
-    onAddComment(video._id, updatedComments);
+    onAddComment(currentVideo._id, updatedComments);
   };
 
   const handleEditComment = (commentId, newText) => {
@@ -41,52 +48,57 @@ const WatchVideoPage = ({ videos, onAddComment, onEditComment, onDeleteComment, 
       comment._id === commentId ? { ...comment, text: newText } : comment
     );
     setComments(updatedComments);
-    onEditComment(video._id, commentId, newText);
+    onEditComment(currentVideo._id, commentId, newText);
   };
 
   const handleDeleteComment = (commentId) => {
     const updatedComments = comments.filter((comment) => comment._id !== commentId);
     setComments(updatedComments);
-    onDeleteComment(video._id, commentId);
+    onDeleteComment(currentVideo._id, commentId);
   };
 
-  const handleVideoSelect = (video) => {
-    navigate(`/watch/${video._id}`, { state: { video: video } });
+  const handleVideoSelect = async (selectedVideo) => {
+    try {
+      const response = await axios.patch(`http://localhost:5000/api/users/${selectedVideo.uploader.id}/videos/${selectedVideo._id}/views`);
+      navigate(`/watch/${selectedVideo._id}`, { state: { video: response.data } });
+    } catch (error) {
+      console.error('Error incrementing views:', error);
+    }
   };
 
   const handleProfileClick = (uploaderId) => {
     navigate(`/userVideos/${uploaderId}`);
   };
 
-  if (!video) return <div>Loading...</div>;
+  if (!currentVideo) return <div>Loading...</div>;
 
   return (
     <div className="watch-video-page">
       <HomeHeader onSearch={() => navigate('/')} />
       <div className="main-content-container">
-      <div className="video-player-container">
-          <VideoPlayer video={video} onLike={() => onLike(video._id)} />
+        <div className="video-player-container">
+          <VideoPlayer video={currentVideo} onLike={() => onLike(currentVideo._id)} />
           <div className="video-details">
             <div className="video-title-section">
               <div className="uploader-info">
                 <img
-                  src={video.uploader.profilePicture}
-                  alt={video.uploader.username}
+                  src={currentVideo.uploader.profilePicture}
+                  alt={currentVideo.uploader.username}
                   className="uploader-profile-picture"
-                  onClick={() => handleProfileClick(video.uploader.id)}
+                  onClick={() => handleProfileClick(currentVideo.uploader.id)}
                 />
-                <span className="uploader-username" onClick={() => handleProfileClick(video.uploader.id)}>
-                  {video.uploader.username}
+                <span className="uploader-username" onClick={() => handleProfileClick(currentVideo.uploader.id)}>
+                  {currentVideo.uploader.username}
                 </span>
               </div>
               <div className="video-metadata">
-                <span>{video.uploadDate}</span>
-                <span>{video.views} </span>
+                <span>{currentVideo.uploadDate}</span>
+                <span>{currentVideo.views} views</span>
               </div>
             </div>
           </div>
           <CommentSection
-            key={video._id}
+            key={currentVideo._id}
             comments={comments}
             onAddComment={handleAddComment}
             onEditComment={handleEditComment}

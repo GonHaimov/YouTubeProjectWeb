@@ -1,6 +1,14 @@
-const { getVideos, createVideo, getUserVideos, getVideoById, updateVideo, deleteVideo } = require('../services/videoService');
+const {
+  getVideos,
+  createVideo,
+  getUserVideos,
+  getVideoById,
+  updateVideo,
+  deleteVideo,
+  incrementViews
+} = require('../services/videoService');
 const upload = require('../utils/multerConfig.js');
-const Video = require('../models/Video.js');
+const Video = require('../models/Video');
 
 const getVideosController = async (req, res) => {
   try {
@@ -28,13 +36,14 @@ const createVideoController = (req, res) => {
       return res.status(400).json({ message: 'Invalid uploader JSON.' });
     }
 
-    const uploadDate = new Date();
+    const uploadDate = new Date().toLocaleDateString();
 
     try {
       const newVideo = new Video({
         title,
         videoFile: `/uploads/videos/${videoFile.filename}`,
         thumbnail: `/uploads/thumbnails/${thumbnail.filename}`,
+        views: 0,
         duration,
         uploadDate,
         comments: [],
@@ -103,6 +112,21 @@ const deleteVideoController = async (req, res) => {
   }
 };
 
+const incrementVideoViews = async (req, res) => {
+  const { id, pid } = req.params;
+
+  try {
+    const video = await incrementViews(id, pid);
+    if (!video) {
+      return res.status(404).json({ message: 'Video not found' });
+    }
+
+    res.json(video);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   getVideosController,
   createVideoController,
@@ -110,4 +134,5 @@ module.exports = {
   getVideoByIdController,
   updateVideoController,
   deleteVideoController,
+  incrementVideoViews
 };

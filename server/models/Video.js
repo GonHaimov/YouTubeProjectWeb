@@ -4,7 +4,7 @@ const videoSchema = new mongoose.Schema({
   title: { type: String, required: true },
   videoFile: { type: String, required: true },
   thumbnail: { type: String, required: true },
-  views: { type: String, default: '0 views' },
+  views: { type: Number, default: 0 },
   duration: { type: Number, required: true },
   uploadDate: { type: String, default: new Date().toLocaleDateString() },
   comments: [{

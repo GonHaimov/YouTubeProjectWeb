@@ -6,6 +6,7 @@ const {
   getVideoByIdController,
   updateVideoController,
   deleteVideoController,
+  incrementVideoViews,
 } = require('../controllers/videoController');
 const authenticateToken = require('../middleware/authenticateToken');
 const router = express.Router();
@@ -16,5 +17,6 @@ router.get('/users/:id/videos', getUserVideosController);
 router.get('/users/:id/videos/:pid', getVideoByIdController);
 router.patch('/users/:id/videos/:pid', authenticateToken, updateVideoController);
 router.delete('/users/:id/videos/:pid', authenticateToken, deleteVideoController);
+router.patch('/users/:id/videos/:pid/views', incrementVideoViews); // New route for incrementing views
 
 module.exports = router;
