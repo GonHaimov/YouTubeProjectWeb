@@ -1,4 +1,5 @@
 const Video = require('../models/Video');
+const mongoose = require('mongoose');
 
 const getVideos = async () => {
   return await Video.find().sort({ views: -1 }).limit(20);
