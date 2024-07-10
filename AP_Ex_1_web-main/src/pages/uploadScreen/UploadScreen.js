@@ -4,7 +4,7 @@ import axios from 'axios';
 import Header from '../../components/homeHeader/HomeHeader'; // Ensure the correct path
 import './UploadScreen.css';
 
-const UploadScreen = () => {
+const UploadScreen = (props) => {
   const [videoFile, setVideoFile] = useState(null);
   const [title, setTitle] = useState('');
   const [thumbnail, setThumbnail] = useState(null);
@@ -24,9 +24,9 @@ const UploadScreen = () => {
         username: loggedInUser.username.toString(),
         profilePicture: loggedInUser.profilePicture.toString()
       }));
-  
+
       try {
-        const token = localStorage.getItem('authToken'); 
+        const token = localStorage.getItem('authToken');
         const response = await axios.post(`http://localhost:5000/api/users/${loggedInUser._id}/videos`, formData, {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -34,6 +34,7 @@ const UploadScreen = () => {
           }
         });
         console.log('Video uploaded successfully:', response.data);
+        props.onUpload();
         navigate('/');
       } catch (error) {
         console.error('Error uploading video:', error);

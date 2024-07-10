@@ -15,27 +15,18 @@ const App = () => {
   const [videos, setVideos] = useState([]);
 
   useEffect(() => {
-    const fetchVideos = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/videos');
-        console.log(response);
-        setVideos(response.data);
-      } catch (error) {
-        console.error('Error fetching videos:', error);
-      }
-    };
-
     fetchVideos();
   }, []);
 
-  const handleUpload = async (newVideo) => {
+  async function fetchVideos() {
     try {
-      const response = await axios.post(`http://localhost:5000/api/users/${newVideo.uploader.id}/videos`, newVideo);
-      setVideos(prevVideos => [response.data, ...prevVideos]);
+      const response = await axios.get('http://localhost:5000/api/videos');
+      console.log(response);
+      setVideos(response.data);
     } catch (error) {
-      console.error('Error uploading video:', error);
+      console.error('Error fetching videos:', error);
     }
-  };
+  }
 
   const handleEdit = async (editedVideo) => {
     try {
@@ -126,17 +117,17 @@ const App = () => {
           />
           <Route
             path="/upload"
-            element={<ProtectedRoute component={UploadScreen} onUpload={handleUpload} />}
+            element={<ProtectedRoute component={UploadScreen} onUpload={fetchVideos} />}
           />
           <Route
             path="/watch/:id"
             element={
-              <WatchVideoPage 
-                videos={videos} 
-                onAddComment={handleAddComment} 
+              <WatchVideoPage
+                videos={videos}
+                onAddComment={handleAddComment}
                 onEditComment={handleEditComment}
                 onDeleteComment={handleDeleteComment}
-                onLike={handleLike} 
+                onLike={handleLike}
               />
             }
           />

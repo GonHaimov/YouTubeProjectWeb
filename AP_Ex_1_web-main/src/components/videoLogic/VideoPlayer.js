@@ -5,10 +5,8 @@ const VideoPlayer = ({ video, onLike }) => {
 
   useEffect(() => {
     if (videoRef.current) {
+      console.log(videoRef.current);
       videoRef.current.load();
-      videoRef.current.play().catch(error => {
-        console.error('Error attempting to play:', error);
-      });
     }
   }, [video?.videoFile]);
 
@@ -24,11 +22,16 @@ const VideoPlayer = ({ video, onLike }) => {
   };
 
   // Construct the video URL only if it exists
-  const videoUrl = videoFile?.startsWith('/uploads/') ? `http://localhost:5000${videoFile}` : videoFile;
+  const videoUrl = `http://localhost:5000${videoFile}`;
+  console.log(videoUrl);
 
   return (
     <div className='video'>
-      <video ref={videoRef} width="1038" height="534" controls key={video._id}>
+      <video ref={videoRef} width="1038" height="534" controls key={video._id} onClick={() => {
+        videoRef.current.play().catch(error => {
+          console.error('Error attempting to play:', error);
+        });
+      }}>
         <source src={videoUrl} type="video/mp4" />
       </video>
       <div className='video-accessories'>
