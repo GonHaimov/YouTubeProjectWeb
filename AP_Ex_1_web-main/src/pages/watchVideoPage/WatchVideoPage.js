@@ -64,18 +64,26 @@ const WatchVideoPage = ({ videos, onAddComment, onEditComment, onDeleteComment, 
     <div className="watch-video-page">
       <HomeHeader onSearch={() => navigate('/')} />
       <div className="main-content-container">
-        <div className="video-player-container">
+      <div className="video-player-container">
           <VideoPlayer video={video} onLike={() => onLike(video._id)} />
-          <div className="uploader-info">
-            <img
-              src={video.uploader.profilePicture}
-              alt={video.uploader.username}
-              className="uploader-profile-picture"
-              onClick={() => handleProfileClick(video.uploader.id)}
-            />
-            <span className="uploader-username" onClick={() => handleProfileClick(video.uploader.id)}>
-              {video.uploader.username}
-            </span>
+          <div className="video-details">
+            <div className="video-title-section">
+              <div className="uploader-info">
+                <img
+                  src={video.uploader.profilePicture}
+                  alt={video.uploader.username}
+                  className="uploader-profile-picture"
+                  onClick={() => handleProfileClick(video.uploader.id)}
+                />
+                <span className="uploader-username" onClick={() => handleProfileClick(video.uploader.id)}>
+                  {video.uploader.username}
+                </span>
+              </div>
+              <div className="video-metadata">
+                <span>{video.uploadDate}</span>
+                <span>{video.views} </span>
+              </div>
+            </div>
           </div>
           <CommentSection
             key={video._id}
