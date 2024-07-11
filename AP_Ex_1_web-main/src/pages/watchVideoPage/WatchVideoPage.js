@@ -7,7 +7,7 @@ import HomeHeader from '../../components/homeHeader/HomeHeader';
 import axios from 'axios';
 import './WatchVideoPage.css';
 
-const WatchVideoPage = ({ videos, onAddComment, onEditComment, onDeleteComment, onLike }) => {
+const WatchVideoPage = ({ videos, onAddComment, onEditComment, onDeleteComment, onLike, fetchVideos }) => {
   const { id } = useParams();
   const location = useLocation();
   const { video } = location.state || {};
@@ -20,21 +20,21 @@ const WatchVideoPage = ({ videos, onAddComment, onEditComment, onDeleteComment, 
       try {
         const response = await axios.patch(`http://localhost:5000/api/users/${video.uploader.id}/videos/${video._id}/views`);
         setCurrentVideo(response.data); // Update local state with incremented views
+        //fetchVideos(); // Fetch updated video list
       } catch (error) {
         console.error('Error incrementing views:', error);
       }
     };
 
-    const fetchVideo = async () => {
-      try {
-        setComments(video.comments || []);
-      } catch (error) {
-        console.error('Error fetching video:', error);
-      }
-    };
+    if (video) {
+      incrementViews();
+    }
+  }, [video, fetchVideos]);
 
-    incrementViews();
-    fetchVideo();
+  useEffect(() => {
+    if (video) {
+      setComments(video.comments || []);
+    }
   }, [video]);
 
   const handleAddComment = (newComment) => {
@@ -60,6 +60,7 @@ const WatchVideoPage = ({ videos, onAddComment, onEditComment, onDeleteComment, 
   const handleVideoSelect = async (selectedVideo) => {
     try {
       const response = await axios.patch(`http://localhost:5000/api/users/${selectedVideo.uploader.id}/videos/${selectedVideo._id}/views`);
+      //fetchVideos(); // Fetch updated video list
       navigate(`/watch/${selectedVideo._id}`, { state: { video: response.data } });
     } catch (error) {
       console.error('Error incrementing views:', error);

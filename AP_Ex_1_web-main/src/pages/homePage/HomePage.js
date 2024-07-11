@@ -5,15 +5,14 @@ import ButtonBar from '../../components/ButtonsBar/ButtonBar';
 import VideoList from '../../components/videoLogic/VideoList';
 import { useNavigate } from 'react-router-dom';
 
-const HomePage = ({ videos, onSearch, onEdit, onDelete, onLike }) => {
+const HomePage = ({ videos, onSearch, onEdit, onDelete, onLike, fetchVideos}) => {
   const [filteredVideos, setFilteredVideos] = useState(videos);
 
   useEffect(() => {
-    console.log("useEffect called")
+    console.log("useEffect called");
     setFilteredVideos(videos);
   }, [videos]);
 
-  console.log(videos)
   const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
   const navigate = useNavigate();
 
@@ -25,9 +24,9 @@ const HomePage = ({ videos, onSearch, onEdit, onDelete, onLike }) => {
   };
 
   const handleVideoSelect = (selectedVideo) => {
+    fetchVideos(); // Fetch updated video list
     navigate(`/watch/${selectedVideo._id}`, { state: { video: selectedVideo } });
   };
-  console.log(filteredVideos)
 
   return (
     <div className="container">

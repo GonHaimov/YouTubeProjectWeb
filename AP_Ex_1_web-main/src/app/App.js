@@ -83,7 +83,7 @@ const App = () => {
 
   const handleEditComment = async (videoId, commentId, newText) => {
     try {
-      const response = await axios.patch(`http://localhost:5000/api/videos/${videoId}/comments/${commentId}`, { text: newText });
+      const response = await axios.patch(`http://localhost:5000/api/videos/${videoId}/comments/${commentId}, { text: newText }`);
       setVideos(videos.map((video) => (video.id === videoId ? response.data : video)));
     } catch (error) {
       console.error('Error editing comment:', error);
@@ -107,7 +107,7 @@ const App = () => {
     }
 
     try {
-      const response = await axios.post(`http://localhost:5000/api/videos/${videoId}/like`, { userId: loggedInUser.id });
+      const response = await axios.post(`http://localhost:5000/api/videos/${videoId}/like, { userId: loggedInUser.id }`);
       setVideos(videos.map((video) => (video.id === videoId ? response.data : video)));
     } catch (error) {
       console.error('Error liking video:', error);
@@ -127,6 +127,7 @@ const App = () => {
                 onEdit={handleGlobalEdit}
                 onDelete={handleDelete}
                 onLike={handleLike}
+                fetchVideos={fetchVideos} // Pass fetchVideos function to HomePage
               />
             }
           />
@@ -143,6 +144,7 @@ const App = () => {
                 onEditComment={handleEditComment}
                 onDeleteComment={handleDeleteComment}
                 onLike={handleLike}
+                //fetchVideos={fetchVideos} // Pass fetchVideos function to WatchVideoPage
               />
             }
           />
