@@ -7,9 +7,7 @@ const videoSchema = new mongoose.Schema({
   views: { type: Number, default: 0 },
   duration: { type: Number, required: true },
   uploadDate: { type: String, default: new Date().toLocaleDateString() },
-  comments: [{
-    text: { type: String, required: false },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false }
+  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment', required: false 
   }],
   uploader: {
     id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // this is the one that upload the video.

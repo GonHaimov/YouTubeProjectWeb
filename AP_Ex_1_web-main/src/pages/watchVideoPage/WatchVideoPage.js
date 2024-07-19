@@ -20,6 +20,11 @@ const WatchVideoPage = ({ videos, onAddComment, onEditComment, onDeleteComment, 
       try {
         const response = await axios.patch(`http://localhost:5000/api/users/${video.uploader.id}/videos/${video._id}/views`);
         setCurrentVideo(response.data); // Update local state with incremented views
+        setComments(response.data.comments || []);
+        console.log("comments",comments);
+        console.log("response comments:",response.data.comments);
+        console.log(currentVideo.comments)
+
         //fetchVideos(); // Fetch updated video list
       } catch (error) {
         console.error('Error incrementing views:', error);
@@ -32,9 +37,12 @@ const WatchVideoPage = ({ videos, onAddComment, onEditComment, onDeleteComment, 
   }, [video, fetchVideos]);
 
   useEffect(() => {
+    console.log("video",video.comments);
+    console.log("current", currentVideo);
     if (video) {
-      setComments(video.comments || []);
+      setComments(video.comments);
     }
+    console.log("comments", comments);
   }, [video]);
 
   const handleAddComment = (newComment) => {
@@ -99,7 +107,7 @@ const WatchVideoPage = ({ videos, onAddComment, onEditComment, onDeleteComment, 
             </div>
           </div>
           <CommentSection
-            key={currentVideo._id}
+            videoId={currentVideo._id}
             comments={comments}
             onAddComment={handleAddComment}
             onEditComment={handleEditComment}

@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CommentForm from './CommentForm';
 import Comment from './Comment';
 import './CommentSection.css';
 import axios from 'axios';
 
 const CommentSection = ({ videoId, comments, onAddComment, onEditComment, onDeleteComment }) => {
-  const [commentList, setCommentList] = useState(comments || []);
-  const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+  const [commentList, setCommentList] = useState([]);
+  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+
+  useEffect(() => {
+    setCommentList(comments || []);
+  }, [comments]);
 
   const handleAddComment = async (newCommentText) => {
     if (!loggedInUser) {
@@ -17,12 +21,23 @@ const CommentSection = ({ videoId, comments, onAddComment, onEditComment, onDele
     try {
       const response = await axios.post(`http://localhost:5000/api/videos/${videoId}/comments`, {
         text: newCommentText,
-        user: loggedInUser._id,
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
       });
+
       const newComment = response.data;
+      console.log("New comment added:", newComment);
+      
+      // Ensure new comment has _id and user properties
+      if (!newComment._id || !newComment.user) {
+        throw new Error('New comment does not have _id or user');
+      }
+
       const updatedComments = [...commentList, newComment];
       setCommentList(updatedComments);
-      onAddComment(newComment);
+      onAddComment(newComment, videoId);
     } catch (error) {
       console.error('Error adding comment:', error);
     }
@@ -30,12 +45,17 @@ const CommentSection = ({ videoId, comments, onAddComment, onEditComment, onDele
 
   const handleEditComment = async (commentId, newText) => {
     try {
-      await axios.patch(`http://localhost:5000/api/comments/${commentId}`, { text: newText });
+      const response = await axios.patch(`http://localhost:5000/api/videos/${videoId}/comments/${commentId}`, { text: newText }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
       const updatedComments = commentList.map((comment) =>
         comment._id === commentId ? { ...comment, text: newText } : comment
       );
       setCommentList(updatedComments);
-      onEditComment(commentId, newText);
+      onEditComment(response.data, videoId);
     } catch (error) {
       console.error('Error editing comment:', error);
     }
@@ -43,10 +63,15 @@ const CommentSection = ({ videoId, comments, onAddComment, onEditComment, onDele
 
   const handleDeleteComment = async (commentId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/comments/${commentId}`);
+      const response = await axios.delete(`http://localhost:5000/api/videos/${videoId}/comments/${commentId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
+      });
+
       const updatedComments = commentList.filter((comment) => comment._id !== commentId);
       setCommentList(updatedComments);
-      onDeleteComment(commentId);
+      onDeleteComment(commentId, videoId);
     } catch (error) {
       console.error('Error deleting comment:', error);
     }

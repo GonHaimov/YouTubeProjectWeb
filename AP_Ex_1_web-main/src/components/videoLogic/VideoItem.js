@@ -79,8 +79,8 @@ const VideoItem = ({ video, onVideoSelect, onEdit, onDelete, loggedInUser }) => 
 
   const handleThumbnailClick = async () => {
     try {
-      const response = await axios.patch(`http://localhost:5000/api/users/${video.uploader.id}/videos/${video._id}/views`);
-      onVideoSelect(response.data);
+      // const response = await axios.patch(`http://localhost:5000/api/users/${video.uploader.id}/videos/${video._id}/views`);
+      onVideoSelect(video);
     } catch (error) {
       console.error('Error incrementing views:', error);
     }

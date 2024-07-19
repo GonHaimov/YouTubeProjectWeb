@@ -49,8 +49,15 @@ const incrementViews = async (userId, videoId) => {
     { _id: videoId, 'uploader.id': userId },
     { $inc: { views: 1 } },
     { new: true }
-  );
+  ).populate({
+    path: 'comments',
+    populate: {
+      path: 'user', // Assuming you want to populate user details in each comment
+      select: 'username profilePicture' // Select specific fields from the user
+    }
+  });
 };
+
 
 module.exports = {
   getVideos,

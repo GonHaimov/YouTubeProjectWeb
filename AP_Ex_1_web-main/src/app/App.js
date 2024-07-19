@@ -72,27 +72,26 @@ const App = () => {
     }
   };
 
-  const handleAddComment = async (videoId, comment) => {
+  //handle add views
+
+  const handleAddComment = async (response, videoId) => {
     try {
-      const response = await axios.post(`http://localhost:5000/api/videos/${videoId}/comments`, comment);
       setVideos(videos.map((video) => (video.id === videoId ? response.data : video)));
     } catch (error) {
       console.error('Error adding comment:', error);
     }
   };
 
-  const handleEditComment = async (videoId, commentId, newText) => {
+  const handleEditComment = async (response,videoId) => {
     try {
-      const response = await axios.patch(`http://localhost:5000/api/videos/${videoId}/comments/${commentId}, { text: newText }`);
       setVideos(videos.map((video) => (video.id === videoId ? response.data : video)));
     } catch (error) {
       console.error('Error editing comment:', error);
     }
   };
 
-  const handleDeleteComment = async (videoId, commentId) => {
+  const handleDeleteComment = async (response, videoId) => {
     try {
-      const response = await axios.delete(`http://localhost:5000/api/videos/${videoId}/comments/${commentId}`);
       setVideos(videos.map((video) => (video.id === videoId ? response.data : video)));
     } catch (error) {
       console.error('Error deleting comment:', error);
