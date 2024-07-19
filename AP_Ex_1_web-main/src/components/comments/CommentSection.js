@@ -28,15 +28,9 @@ const CommentSection = ({ videoId, comments, onAddComment, onEditComment, onDele
       });
 
       const newComment = response.data;
-      
-      // Ensure new comment has _id and user properties
-      if (!newComment._id || !newComment.user) {
-        throw new Error('New comment does not have _id or user');
-      }
-
       const updatedComments = [...commentList, newComment];
       setCommentList(updatedComments);
-      onAddComment(newComment, videoId);
+      onAddComment(newComment);
     } catch (error) {
       console.error('Error adding comment:', error);
     }
@@ -54,7 +48,7 @@ const CommentSection = ({ videoId, comments, onAddComment, onEditComment, onDele
         comment._id === commentId ? { ...comment, text: newText } : comment
       );
       setCommentList(updatedComments);
-      onEditComment(response.data, videoId);
+      onEditComment(commentId, newText);
     } catch (error) {
       console.error('Error editing comment:', error);
     }
@@ -62,7 +56,7 @@ const CommentSection = ({ videoId, comments, onAddComment, onEditComment, onDele
 
   const handleDeleteComment = async (commentId) => {
     try {
-      const response = await axios.delete(`http://localhost:5000/api/videos/${videoId}/comments/${commentId}`, {
+      await axios.delete(`http://localhost:5000/api/videos/${videoId}/comments/${commentId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('authToken')}`
         }
@@ -70,7 +64,7 @@ const CommentSection = ({ videoId, comments, onAddComment, onEditComment, onDele
 
       const updatedComments = commentList.filter((comment) => comment._id !== commentId);
       setCommentList(updatedComments);
-      onDeleteComment(commentId, videoId);
+      onDeleteComment(commentId);
     } catch (error) {
       console.error('Error deleting comment:', error);
     }

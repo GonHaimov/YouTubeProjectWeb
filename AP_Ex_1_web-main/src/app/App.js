@@ -140,7 +140,7 @@ const App = () => {
                 onEditComment={handleEditComment}
                 onDeleteComment={handleDeleteComment}
                 onLike={handleLike}
-                //fetchVideos={fetchVideos} // Pass fetchVideos function to WatchVideoPage
+                fetchVideos={fetchVideos} // Pass fetchVideos function to WatchVideoPage
               />
             }
           />

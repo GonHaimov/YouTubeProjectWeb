@@ -31,7 +31,7 @@ const WatchVideoPage = ({ videos, onAddComment, onEditComment, onDeleteComment, 
     if (video) {
       incrementViews();
     }
-  }, [video, fetchVideos]);
+  }, [video]);
 
   useEffect(() => {
   
@@ -47,11 +47,11 @@ const WatchVideoPage = ({ videos, onAddComment, onEditComment, onDeleteComment, 
   };
 
   const handleEditComment = (commentId, newText) => {
-    const updatedComments = comments.map((comment) =>
-      comment._id === commentId ? { ...comment, text: newText } : comment
+    setComments((prevComments) =>
+      prevComments.map((comment) =>
+        comment._id === commentId ? { ...comment, text: newText } : comment
+      )
     );
-    setComments(updatedComments);
-    onEditComment(currentVideo._id, commentId, newText);
   };
 
   const handleDeleteComment = (commentId) => {
