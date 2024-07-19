@@ -9,7 +9,6 @@ const HomePage = ({ videos, onSearch, onEdit, onDelete, onLike, fetchVideos}) =>
   const [filteredVideos, setFilteredVideos] = useState(videos);
 
   useEffect(() => {
-    console.log("useEffect called");
     setFilteredVideos(videos);
   }, [videos]);
 

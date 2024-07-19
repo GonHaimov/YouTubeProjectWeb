@@ -33,7 +33,6 @@ const UploadScreen = (props) => {
             'Content-Type': 'multipart/form-data'
           }
         });
-        console.log('Video uploaded successfully:', response.data);
         props.onUpload();
         navigate('/');
       } catch (error) {

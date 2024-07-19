@@ -47,8 +47,6 @@ function Auth() {
       }
 
       const result = await response.json();
-      console.log('Login successful', result);
-      // Handle login success (e.g., save token, navigate)
       navigate('/');
     } catch (error) {
       console.error('Error:', error);
@@ -74,8 +72,7 @@ function Auth() {
       }
 
       const result = await response.json();
-      console.log('Registration successful', result);
-      // Handle registration success (e.g., navigate to login)
+      
       navigate('/login');
     } catch (error) {
       console.error('Error:', error);

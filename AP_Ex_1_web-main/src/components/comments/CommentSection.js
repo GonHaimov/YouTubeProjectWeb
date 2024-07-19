@@ -28,7 +28,6 @@ const CommentSection = ({ videoId, comments, onAddComment, onEditComment, onDele
       });
 
       const newComment = response.data;
-      console.log("New comment added:", newComment);
       
       // Ensure new comment has _id and user properties
       if (!newComment._id || !newComment.user) {
