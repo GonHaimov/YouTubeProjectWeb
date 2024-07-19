@@ -9,7 +9,7 @@ const RelatedVideoList = ({ videos, onVideoSelect }) => {
           <img src={video.thumbnail.startsWith('/uploads/') ? `http://localhost:5000${video.thumbnail}` : video.thumbnail} alt={video.title} />
           <div className="related-video-info">
             <h4>{video.title}</h4>
-            <p>{video.views}</p>
+            <p>{video.views} views</p>
           </div>
         </div>
       ))}
