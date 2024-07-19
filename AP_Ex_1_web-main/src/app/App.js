@@ -22,7 +22,6 @@ const App = () => {
   async function fetchVideos() {
     try {
       const response = await axios.get('http://localhost:5000/api/videos');
-      console.log(response);
       setVideos(response.data);
     } catch (error) {
       console.error('Error fetching videos:', error);
@@ -71,8 +70,6 @@ const App = () => {
       console.error('Error searching videos:', error);
     }
   };
-
-  //handle add views
 
   const handleAddComment = async (response, videoId) => {
     try {

@@ -2,7 +2,29 @@ const Video = require('../models/Video');
 const mongoose = require('mongoose');
 
 const getVideos = async () => {
-  return await Video.find().sort({ views: -1 }).limit(20);
+  try {
+    // Fetch the top 10 most popular videos by views
+    const topVideos = await Video.find().sort({ views: -1 }).limit(10);
+
+    // Get the IDs of the top videos
+    const topVideoIds = topVideos.map(video => video._id);
+
+    // Fetch 10 random videos excluding the top videos
+    const randomVideos = await Video.aggregate([
+      { $match: { _id: { $nin: topVideoIds } } },
+      { $sample: { size: 10 } }
+    ]);
+
+    // Combine both sets of videos
+    let combinedVideos = [...topVideos, ...randomVideos];
+
+    // Shuffle the combined array
+    combinedVideos = combinedVideos.sort(() => Math.random() - 0.5);
+
+    return combinedVideos;
+  } catch (error) {
+    throw new Error('Error fetching videos');
+  }
 };
 
 const createVideo = async ({ title, videoFile, thumbnail,views, duration, uploadDate, uploader }) => {
