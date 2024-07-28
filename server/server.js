@@ -7,7 +7,7 @@ const commentRoutes = require('./routes/commentRoutes');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const path = require('path');
-const seedDB = require('./seed'); // Import the seed script
+//const seedDB = require('./seed'); // Import the seed script
 
 dotenv.config();
 connectDB();
@@ -25,9 +25,11 @@ app.use('/api', videoRoutes);
 app.use('/api', commentRoutes);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, async () => {
-  console.log(`Server running on port ${PORT}`);
-  if (process.env.SEED_DB === 'true') {
-    await seedDB();
-  }
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// app.listen(PORT, async () => {
+//   console.log(`Server running on port ${PORT}`);
+//   if (process.env.SEED_DB === 'true') {
+//     await seedDB();
+//   }
+// });
