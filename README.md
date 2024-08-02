@@ -5,7 +5,7 @@ This project is a YouTube-like application that consists of a frontend and a bac
 
 ## Project Structure
 - `AP_Ex_1_web-main`: This folder contains the frontend code.
-- `server`: This folder contains the backend code, including the server, models, routes, and database seeding script.
+- `server`: This folder contains the backend code, including the server, models and routes.
 
 ## Prerequisites
 - Node.js
@@ -13,57 +13,44 @@ This project is a YouTube-like application that consists of a frontend and a bac
 
 ## Setup Instructions
 
-### Backend Setup
-
-1. **Navigate to the server directory**:
-    ```bash
-    cd server
-    ```
-
-2. **Install dependencies**:
-    ```bash
-    npm install
-    ```
-
-3. **Start the MongoDB server locally**:
+1. **Start the MongoDB server locally**:
     ```bash
     mongod
     ```
 
-4. **Seed the database with default data**:
-    ```bash
-    npm run seed
-    ```
+2. **Import collections into MongoDB**:
 
-5. **Start the backend server**:
-    ```bash
+   Ensure your MongoDB server is running.
+   Import each JSON file in the MongoDB folder into your local MongoDB instance. You can use the mongoimport command for this:
+   mongoimport --db youtube --collection users --file MongoDB/users.json --jsonArray
+   mongoimport --db youtube --collection videos --file MongoDB/videos.json --jsonArray
+   mongoimport --db youtube --collection comments --file MongoDB/comments.json --jsonArray
+
+
+### Backend Setup
+
+1. **Navigate to the server directory**:
+    cd server (YouTubeProjectWeb\server)
+
+2. **Start the backend server**:
     node server.js
-    ```
 
     The server will start on the port specified in the `.env` file or default to port 5000.
 
 ### Frontend Setup
 
 1. **Navigate to the frontend directory**:
-    ```bash
-    cd ../AP_Ex_1_web-main
-    ```
+
+    cd ../AP_Ex_1_web-main (YouTubeProjectWeb\AP_Ex_1_web-main)
+
 
 2. **Install dependencies**:
-    ```bash
     npm install
-    ```
+    
 
 3. **Start the frontend**:
-    ```bash
     npm start
-    ```
+    
 
     The frontend will start on the default port 3000.
 
-## Environment Variables
-Create a `.env` file in the `server` directory with the following variables:
-```plaintext
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/yourdb
-SEED_DB=true
