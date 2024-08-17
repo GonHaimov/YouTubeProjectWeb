@@ -18,14 +18,27 @@ This project is a YouTube-like application that consists of a frontend and a bac
     mongod
     ```
 
-2. **Import collections into MongoDB**:
+## MongoDB Setup
+Open your MongoDB GUI or terminal:
+1. **Create a New Database**:
 
-   Ensure your MongoDB server is running.
-   Import each JSON file in the MongoDB folder into your local MongoDB instance. You can use the mongoimport command for this:
-   mongoimport --db youtube --collection users --file MongoDB/users.json --jsonArray
-   mongoimport --db youtube --collection videos --file MongoDB/videos.json --jsonArray
-   mongoimport --db youtube --collection comments --file MongoDB/comments.json --jsonArray
+Click on the plus icon near "Databases" to add a new database.
+Database Name: youtube
+Collection Name: videos
 
+2. **Add Collections**:
+
+After creating the videos collection, add two more collections:
+comments
+users
+
+3. **Import JSON Data**:
+
+For each collection, click on Add Data -> Import JSON.
+Import the corresponding JSON files from YouTubeProjectWeb\MongoDB:
+videos.json for the videos collection.
+comments.json for the comments collection.
+users.json for the users collection.
 
 ### Backend Setup
 
