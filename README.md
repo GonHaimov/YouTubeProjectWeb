@@ -11,13 +11,6 @@ This project is a YouTube-like application that consists of a frontend and a bac
 - Node.js
 - MongoDB
 
-## Setup Instructions
-
-1. **Start the MongoDB server locally**:
-    ```bash
-    mongod
-    ```
-
 ## MongoDB Setup
 Open your MongoDB GUI or terminal:
 1. **Create a New Database**:
