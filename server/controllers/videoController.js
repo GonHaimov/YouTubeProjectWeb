@@ -9,6 +9,7 @@ const {
 } = require('../services/videoService');
 const upload = require('../utils/multerConfig.js');
 const Video = require('../models/Video');
+const net = require('net');
 
 const getVideosController = async (req, res) => {
   try {
@@ -112,7 +113,41 @@ const deleteVideoController = async (req, res) => {
   }
 };
 
+const tcpTest = async (videoID) => {
+  const HOST = '192.168.245.128'; // Server IP address
+const PORTTCP = 5555;        // Server port
+
+// Create a TCP client
+const client = new net.Socket();
+
+// Connect to the server
+client.connect(PORTTCP, HOST, () => {
+    console.log(`Connected to server at ${HOST}:${PORTTCP}`);
+
+    // Send a message to the server
+    client.write(`Hello, server! This is a test message. ${videoID}`);
+});
+
+// Listen for data from the server
+client.on('data', (data) => {
+    console.log(`Received from server: ${data}`);
+
+    // Close the connection after receiving the response
+    client.end();
+});
+
+// Handle connection close
+client.on('close', () => {
+    console.log('Connection closed');
+});
+
+// Handle errors
+client.on('error', (err) => {
+    console.error(`Error: ${err.message}`);
+});
+}
 const incrementVideoViews = async (req, res) => {
+ 
   const { id, pid } = req.params;
 
   try {
@@ -120,6 +155,7 @@ const incrementVideoViews = async (req, res) => {
     if (!video) {
       return res.status(404).json({ message: 'Video not found' });
     }
+    tcpTest(video._id)
 
     res.json(video);
   } catch (err) {
