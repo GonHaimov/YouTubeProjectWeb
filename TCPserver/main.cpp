@@ -38,6 +38,7 @@ void handleClient(int client_sock, RecommendationSystem& recSystem) {
     }
 
     close(client_sock);
+    close(client_sock);
 }
 
 int main() {
