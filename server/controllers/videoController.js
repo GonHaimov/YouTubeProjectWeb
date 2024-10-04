@@ -7,10 +7,15 @@ const {
   deleteVideo,
   incrementViews
 } = require('../services/videoService');
+
+const { getRecommendedVideos } = require('../services/videoService');
 const upload = require('../utils/multerConfig.js');
 const Video = require('../models/Video');
+const User = require('../models/User'); // Make sure User is imported
+const mongoose = require('mongoose'); // Import mongoose to work with ObjectId
 const net = require('net');
 
+// Controller to get all videos
 const getVideosController = async (req, res) => {
   try {
     const videos = await getVideos();
@@ -20,6 +25,7 @@ const getVideosController = async (req, res) => {
   }
 };
 
+// Controller to handle video creation
 const createVideoController = (req, res) => {
   upload(req, res, async (err) => {
     if (err) {
@@ -59,6 +65,7 @@ const createVideoController = (req, res) => {
   });
 };
 
+// Controller to get videos for a specific user
 const getUserVideosController = async (req, res) => { 
   const { id } = req.params;
 
@@ -70,6 +77,7 @@ const getUserVideosController = async (req, res) => {
   }
 };
 
+// Controller to get video by ID
 const getVideoByIdController = async (req, res) => {
   const { id, pid } = req.params;
 
@@ -84,6 +92,7 @@ const getVideoByIdController = async (req, res) => {
   }
 };
 
+// Controller to update a video
 const updateVideoController = async (req, res) => {
   const { id, pid } = req.params;
   const updateData = req.body;
@@ -99,6 +108,7 @@ const updateVideoController = async (req, res) => {
   }
 };
 
+// Controller to delete a video
 const deleteVideoController = async (req, res) => {
   const { id, pid } = req.params;
 
@@ -109,55 +119,78 @@ const deleteVideoController = async (req, res) => {
     }
     res.json({ message: 'Video deleted successfully' });
   } catch (err) {
-    res.status (500).json({ message: err.message });
+    res.status(500).json({ message: err.message });
   }
 };
 
-const tcpTest = async (videoID) => {
+// TCP test function to send data to the C++ server
+const tcpTest = async (videoID, userId) => {
   const HOST = '192.168.245.128'; // Server IP address
-const PORTTCP = 5555;        // Server port
+  const PORTTCP = 5555;           // Server port
 
-// Create a TCP client
-const client = new net.Socket();
+  // Create a TCP client
+  const client = new net.Socket();
 
-// Connect to the server
-client.connect(PORTTCP, HOST, () => {
+  // Connect to the server
+  client.connect(PORTTCP, HOST, () => {
     console.log(`Connected to server at ${HOST}:${PORTTCP}`);
+    client.write(`recommend ${userId} ${videoID}`);
+  });
 
-    // Send a message to the server
-    client.write(`Hello, server! This is a test message. ${videoID}`);
-});
-
-// Listen for data from the server
-client.on('data', (data) => {
+  // Listen for data from the server
+  client.on('data', (data) => {
     console.log(`Received from server: ${data}`);
+    client.end(); // Close the connection after receiving the response
+  });
 
-    // Close the connection after receiving the response
-    client.end();
-});
-
-// Handle connection close
-client.on('close', () => {
+  client.on('close', () => {
     console.log('Connection closed');
-});
+  });
 
-// Handle errors
-client.on('error', (err) => {
+  client.on('error', (err) => {
     console.error(`Error: ${err.message}`);
-});
-}
+  });
+};
+
+// Controller to increment video views and update watch history
 const incrementVideoViews = async (req, res) => {
- 
-  const { id, pid } = req.params;
+  const { id, pid } = req.params; // id is user ID, pid is video ID
 
   try {
     const video = await incrementViews(id, pid);
     if (!video) {
       return res.status(404).json({ message: 'Video not found' });
     }
-    tcpTest(video._id)
+
+    // Add video to user's watch history if not already present
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Ensure watchHistory stores ObjectId type
+    const videoObjectId = new mongoose.Types.ObjectId(pid); // Ensure 'new' is used here
+    if (!user.watchHistory.includes(videoObjectId)) {
+      user.watchHistory.push(videoObjectId);
+      await user.save();
+    }
+
+    tcpTest(video._id, user._id); // Send video ID to the C++ server
 
     res.json(video);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Controller to get recommended videos for a user
+const getRecommendedVideosController = async (req, res) => {
+
+  const { id, pid } = req.params; // User ID
+
+  try {
+    const recommendedVideos = await getRecommendedVideos(id, pid);
+    res.json(recommendedVideos);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -170,5 +203,6 @@ module.exports = {
   getVideoByIdController,
   updateVideoController,
   deleteVideoController,
-  incrementVideoViews
+  incrementVideoViews,
+  getRecommendedVideosController
 };
