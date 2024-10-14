@@ -1,49 +1,12 @@
 #include <sstream>
-#include <map>
 #include <iostream>
 #include <cstring>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
-#include <thread>  // <--- Make sure to include this for std::thread
+#include <thread>
+#include "RecommendationSystem.hpp"  // Include the header
 
-class RecommendationSystem {
-private:
-    std::map<int, std::vector<int>> userWatchedVideos; // User -> List of watched videos
-
-public:
-    // Update the watch history for a user and a video
-    void updateWatchHistory(int userId, int videoId) {
-        userWatchedVideos[userId].push_back(videoId);
-    }
-
-    // Get recommended videos for a user
-    std::vector<int> getRecommendations(int userId) {
-        std::vector<int> recommendations;
-        std::set<int> recommendedSet; // To avoid duplicates
-
-        // Find videos that similar users have watched
-        for (int watchedVideo : userWatchedVideos[userId]) {
-            for (const auto& [otherUserId, videos] : userWatchedVideos) {
-                if (otherUserId != userId) {
-                    for (int otherVideo : videos) {
-                        // Only recommend videos the user hasn't watched yet
-                        if (std::find(userWatchedVideos[userId].begin(), userWatchedVideos[userId].end(), otherVideo) == userWatchedVideos[userId].end()) {
-                            if (recommendedSet.find(otherVideo) == recommendedSet.end()) {
-                                recommendations.push_back(otherVideo);
-                                recommendedSet.insert(otherVideo);
-                            }
-                        }
-                    }
-                }
-            }
-        }        
-
-        return recommendations;
-    }
-};
-
-// Modify the handleClient function to handle user ID and video ID
 void handleClient(int client_sock, RecommendationSystem& recSystem) {
     char buffer[4096];
     ssize_t bytes_received;
@@ -51,21 +14,21 @@ void handleClient(int client_sock, RecommendationSystem& recSystem) {
     while ((bytes_received = recv(client_sock, buffer, sizeof(buffer), 0)) > 0) {
         buffer[bytes_received] = '\0'; // Null-terminate the received data
         std::istringstream iss(buffer);
-        std::string command;
-        int userId, videoId;
+        std::string command, userId, videoId;
 
         iss >> command >> userId >> videoId;
-
+        std:: cout << command << userId << videoId << std:: endl;
         if (command == "watch") {
             recSystem.updateWatchHistory(userId, videoId);
         } else if (command == "recommend") {
-            std::vector<int> recommendations = recSystem.getRecommendations(userId);
+            recSystem.updateWatchHistory(userId, videoId);
+            std::vector<std::string> recommendations = recSystem.getRecommendations(userId);
             std::ostringstream oss;
-            oss << "Recommended videos: ";
-            for (int rec : recommendations) {
+            for (const std::string& rec : recommendations) {
                 oss << rec << " ";
             }
             std::string response = oss.str();
+            std:: cout << response.c_str() << std:: endl;
             send(client_sock, response.c_str(), response.size(), 0);
         }
     }
@@ -74,6 +37,7 @@ void handleClient(int client_sock, RecommendationSystem& recSystem) {
         perror("error receiving data");
     }
 
+    close(client_sock);
     close(client_sock);
 }
 
@@ -102,18 +66,20 @@ int main() {
         return 1;
     }
 
+    RecommendationSystem recSystem;  // Create the RecommendationSystem object
+
     while (true) {
         struct sockaddr_in client_sin;
         unsigned int addr_len = sizeof(client_sin);
         int client_sock = accept(sock, (struct sockaddr*)&client_sin, &addr_len);
 
         if (client_sock < 0) {
-            perror("error accepting client");  // Fixed typo here
+            perror("error accepting client");
             continue;
         }
 
         // Create a new thread to handle communication with the client
-        std::thread client_thread(handleClient, client_sock);
+        std::thread client_thread(handleClient, client_sock, std::ref(recSystem));
         client_thread.detach(); // Detach the thread to run independently
     }
 
