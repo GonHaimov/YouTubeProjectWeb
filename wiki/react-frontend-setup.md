@@ -1,4 +1,4 @@
-React Client Setup:
+# React Client Setup:
 
 1. Navigate to the React front-end directory (AP_Ex_1_web-main) inside the YouTubeProjectWeb folder:
 cd YouTubeProjectWeb/AP_Ex_1_web-main
