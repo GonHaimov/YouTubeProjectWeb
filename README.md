@@ -1,8 +1,15 @@
 # YouTube Project
 
 ## Project Overview
-This project is a YouTube-like application that consists of a frontend and a backend. The backend is built with Node.js, Express, and MongoDB, while the frontend is built with React.
+This project is a YouTube-like application that allows users to upload and watch videos, write comments, and interact with other users. It includes a frontend built with React and a backend developed using Node.js, Express, and MongoDB.
 
+Key features include:
+
+User authentication (registration and login).
+Uploading videos and storing them in the server.
+Browsing and watching videos.
+Writing, editing, and deleting comments.
+A recommendation system for videos based on viewing history.
 ## Project Structure
 - `AP_Ex_1_web-main`: This folder contains the frontend code.
 - `server`: This folder contains the backend code, including the server, models and routes.
